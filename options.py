@@ -14,14 +14,6 @@ class IncludeOSUpgrades(DefaultOnToggle):
     """Include OSUpgrades in the randomizer."""
     display_name = "Include OSUpgrades"
 
-class IncludeChems(Toggle):
-    """Include Chemicals in the randomizer."""
-    display_name = "Include Chemicals"
-
-class IncludeDecorations(Toggle):
-    """Include Decorations in the randomizer."""
-    display_name = "Include decorations"
-
 class IncludeStartingWrench(Toggle):
     """Include the wrench found on the first body in medsci in the randomizer.  Softlocks, strange strategies, and frustation potentially possible."""
     display_name = "Include starting wrench"
@@ -35,7 +27,5 @@ class ManyIsVictory(Toggle):
 class SS2options(PerGameCommonOptions):
     #include_stats_skills_psi: IncludeStatsSkillsPsi
     include_os_upgrades: IncludeOSUpgrades
-    include_chems: IncludeChems
-    include_decorations: IncludeDecorations
     include_starting_wrench: IncludeStartingWrench
     many_is_victory: ManyIsVictory

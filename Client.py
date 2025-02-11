@@ -3,12 +3,9 @@ import asyncio
 import Utils
 import sys
 import tkinter as tk
-import tkinter.filedialog
 import os
 import threading
 import asyncio
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
 
 from CommonClient import ClientCommandProcessor, CommonContext, gui_enabled, logger, server_loop, get_base_parser
 
@@ -20,6 +17,13 @@ class SS2Context(CommonContext):
     command_processor = SS2CommandProcessor
     game = "System Shock 2"
     items_handling = 0b111  # full remote
+
+    SS2DirPath = None
+    recieved_items_file = None
+    sent_items_file = None
+    settings_file = None
+    seed = None
+    is_connected = False
 
     def __init__(self, server_address, password):
         super(SS2Context, self).__init__(server_address, password)
@@ -39,7 +43,7 @@ class SS2Context(CommonContext):
         await self.send_connect()
 
     async def connection_closed(self):
-        # This is called when the connection is closed (duh!)
+        self.is_connected = False
         await super(SS2Context, self).connection_closed()
 
     # Do not touch this
@@ -51,18 +55,33 @@ class SS2Context(CommonContext):
             return []
 
     async def shutdown(self):
-        # What is called when the app gets shutdown
+        open(self.recieved_items_file, "w").close()
+        open(self.sent_items_file, "w").close()
+        open(self.settings_file, "w").close()
         await super(SS2Context, self).shutdown()
 
     def on_package(self, cmd: str, args: dict):
-        # This is what is done when a package arrives.
-        #if cmd in {"Bounced"}:
-        #if cmd in {"LocationInfo"}:
-        #if cmd in {"ReceivedItems"}:
-        #if cmd in {"RoomUpdate"}:
-        #if cmd in {"RoomInfo"}:
-        #if cmd in {"Connected"}:
-        return
+        if cmd in {"RoomInfo"}:
+            self.seed = args["seed_name"]
+
+        if cmd in {"Connected"}:
+            with open(self.recieved_items_file, "w") as f:
+                f.write(self.seed + ",")
+                #then all item ids
+
+            with open(self.sent_items_file, "w") as f:
+                f.write(args["checked_locations"])
+
+            with open(self.settings_file, "w") as f:
+                f.write(self.seed + ",")
+                f.write(args["slot_info"]["options"])
+
+            self.is_connected = True
+
+        if cmd in {"ReceivedItems"}:
+            with open(self.recieved_items_file, "a") as f:
+                for item in args["items"]:
+                    f.write(item["item"] + ",")
     
     def run_gui(self):
         from kvui import GameManager
@@ -79,10 +98,26 @@ def print_error_and_close(msg):
     Utils.messagebox("Error", msg, error=True)
     sys.exit(1)
 
+async def loc_watcher(self):
+    while True:
+        if self.is_connected:
+            with os.scandir(self.SS2DirPath) as entries:
+                for entry in entries:
+                    if "pylocid" in entry.name:
+                        if entry.name == "pylocid2.txt":
+                            asyncio.create_task(self.send_msgs([{"cmd": "StatusUpdate", "status": 30}]))#goal
+                        asyncio.create_task(self.send_msgs([{"cmd": "LocationChecks", "locations": [int(entry.name.replace("pylocid","").replace(".txt", ""))]}]))
+                        #os.remove(entry.path) #test before uncommenting
+        await asyncio.sleep(2)
+
 def launch():
     async def main(args):
         ctx = SS2Context(args.connect, args.password)
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
+
+        loc_watcher_task = asyncio.create_task(loc_watcher())
+        await loc_watcher_task
+
         if gui_enabled:
             ctx.run_gui()
         ctx.run_cli()
@@ -94,7 +129,9 @@ def launch():
 
     SS2DirPath = tk.filedialog.askdirectory(title="Select System Shock 2 installation folder", 
                                             filetypes=[("SS2", "SS2")])
-    print(SS2DirPath)
+    recieved_items_file = SS2DirPath + "\\DMM\\Archipelago\\data\\ReceivedItems.txt"
+    sent_items_file = SS2DirPath + "\\DMM\\Archipelago\\data\\SentItems.txt"
+    settings_file = SS2DirPath + "\\DMM\\Archipelago\\data\\Settings.txt"
 
     parser = get_base_parser()
     args = parser.parse_args()
