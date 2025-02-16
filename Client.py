@@ -5,7 +5,6 @@ import sys
 import tkinter as tk
 import os
 import threading
-import asyncio
 
 from CommonClient import ClientCommandProcessor, CommonContext, gui_enabled, logger, server_loop, get_base_parser
 
