@@ -66,7 +66,6 @@ class SS2Context(CommonContext):
         if cmd in {"Connected"}:
             with open(self.recieved_items_file, "w") as f:
                 f.write(self.seed + ",")
-                #then all item ids
 
             with open(self.sent_items_file, "w") as f:
                 f.write(args["checked_locations"])

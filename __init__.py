@@ -172,7 +172,7 @@ class SS2World(World):
                                                                          "medsci2crew": lambda state: state.has("Deck 2 crew access card", self.player) and self.has_functional_weapon(state), 
                                                                          "eng1": lambda state: state.has("WATTS re: Maintenance conduit Audio Log", self.player) and self.has_functional_weapon(state)})
         medsci2crew_region.add_exits({"medsci2med"}, {"medsci2med": lambda state: state.has("Deck 2 crew access card")})
-        eng1_region.add_exits({"eng2", "hydro2"}, {"hydro2": lambda state: state.has("45m/dEx circuit board", self.player) and state.has("Fluidics Control Access Audio Log", self.player)})
+        eng1_region.add_exits({"eng2", "hydro2"}, {"hydro2": lambda state: state.has("45m/dEx circuit board", self.player) and state.has("SANGER re: Locked in Audio Log", self.player)})
         hydro2_region.add_exits({"hydro1", "hydro3", "ops2"}, {"hydro1": lambda state: state.has("Hydroponics A access card", self.player), 
                                                                "hydro3": lambda state: state.has("Hydroponics D access card", self.player),
                                                                "ops2": lambda state: state.has("Toxin-A", self.player, 4) and state.has("Vanadium", self.player) and state.has("Antimony", self.player, 2)
