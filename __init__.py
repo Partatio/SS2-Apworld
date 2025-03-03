@@ -43,7 +43,7 @@ class SS2World(World):
 
                                 ((state.has_group("Laser Pistol", p) or (state.has_group("Broken Laser Pistol", p) and (state.has("Repair Upgrade", p) or apr))) and state.has("Energy Weapon Upgrade", p)) or
 
-                                (state.has_group("Laser Rapier", p) and state.has("Energy Weapon Upgrade", p, 4) and state.has("Agility Upgrade", self. player, 2)) or
+                                (state.has_group("Laser Rapier", p) and state.has("Energy Weapon Upgrade", p, 4) and state.has("Agility Upgrade", p, 2)) or
 
                                 ((state.has_group("EMP Rifle", p) or (state.has_group("Broken EMP Rifle", p) and (state.has("Repair Upgrade", p, 2) or apr))) and state.has("Energy Weapon Upgrade", p, 6)) or
 
@@ -53,13 +53,13 @@ class SS2World(World):
 
                                 ((state.has_group("Fusion Cannon", p) or (state.has_group("Broken Fusion Cannon", p) and (state.has("Repair Upgrade", p, 4) or apr))) and state.has("Heavy Weapon Upgrade", p, 6) and state.has("Strength Upgrade", p, 4)) or
 
-                                (state.has_group("Crystal Shard", p) and state.has("Exotic Weapon Upgrade", p) and state.has("Research Upgrade", self. player, 4) and state.has("Yttrium", p)) or
+                                (state.has_group("Crystal Shard", p) and state.has("Exotic Weapon Upgrade", p) and (state.has("Research Upgrade", p, 4) or (state.has("Research Upgrade", p, 3) and state.has("LabAssistant(TM) Implant", p))) and state.has("Yttrium", p)) or
 
                                 ((state.has_group("Viral Proliferator", p) or (state.has_group("Broken Viral Proliferator", p) and (state.has("Repair Upgrade", p, 4) or apr))) and state.has("Exotic Weapon Upgrade", p, 4)
                                 and state.has("Technetium", p) and state.has("Tellurium", p)) or
 
                                 ((state.has_group("Annelid Launcher", p) or (state.has_group("Broken Annelid Launcher", p) and (state.has("Repair Upgrade", p, 5) or apr))) and state.has("Exotic Weapon Upgrade", p, 6) 
-                                and state.has("Strength Upgrade", p, 3) and state.has("Agility Upgrade", p, 3), state.has("Research Upgrade", p, 6) and state.has("Molybdenum", p) and state.has("Selenium", p)) or
+                                and state.has("Strength Upgrade", p, 3) and state.has("Agility Upgrade", p, 3) and (state.has("Research Upgrade", p, 6) or (state.has("Research Upgrade", p, 5) and state.has("LabAssistant(TM) Implant", p))) and state.has("Molybdenum", p) and state.has("Selenium", p)) or
         
                                 (state.has("Black-Ops Psionic Amplifier", p) and state.has("Psi Upgrade", p, 2) and ((state.has("Projected Cryokinesis Psi Ability", p) and state.has("Tier 1 Psi Ability", p)) or 
                                                                                                                      (state.has("Localized Pyrokinesis Psi Ability", p) and state.has("Tier 2 Psi Ability", p)) or 
@@ -164,6 +164,8 @@ class SS2World(World):
                     case "Hacking Upgrade":
                         add_rule(loc, lambda state, ri = reqitem, a = amount: (state.has(ri, self.player, a) and state.has("Cybernetic Affinity Upgrade", self.player, (a // 2))) or 
                                  (state.has("Psi Upgrade", self.player, (a*2)-2) and state.has("Black-Ops Psionic Amplifier", self.player) and state.has("Remote Circuitry Manipulation Psi Ability", self.player) and state.has("Tier 4 Psi Ability", self.player)))
+                    case "Research Upgrade":
+                        add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a) or (state.has(ri, self.player, a-1) and state.has("LabAssistant(TM) Implant", self.player)))
                     case _:
                         add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a))
 
@@ -176,7 +178,7 @@ class SS2World(World):
         hydro2_region.add_exits({"hydro1", "hydro3", "ops2"}, {"hydro1": lambda state: state.has("Hydroponics A access card", self.player), 
                                                                "hydro3": lambda state: state.has("Hydroponics D access card", self.player),
                                                                "ops2": lambda state: state.has("Toxin-A", self.player, 4) and state.has("Vanadium", self.player) and state.has("Antimony", self.player, 2)
-                                                               and state.has_group("Research", self.player) and state.has("Hydroponics A access card", self.player) and state.has("Hydroponics D access card", self.player)})
+                                                               and (state.has("Research Upgrade", self.player) or state.has("LabAssistant(TM) Implant", self.player)) and state.has("Hydroponics A access card", self.player) and state.has("Hydroponics D access card", self.player)})
         ops2_region.add_exits({"rec1", "ops1", "ops3", "ops4"})
         rec1_region.add_exits({"command1", "rec2", "rec3"}, {"command1": lambda state: state.has("Quantum Simulation chip", self.player) and state.has("Linear Simulation chip", self.player) and state.has("Interpolated Simulation chip", self.player)
                                                              and state.has("Deck 5 Crew access card", self.player) and state.has("Dead Power Cell", self.player, 2) and state.has("Athletics access card", self.player)})
