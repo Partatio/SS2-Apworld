@@ -176,9 +176,9 @@ class SS2World(World):
         menu_region.add_exits({"medsci1"})
         medsci1_region.add_exits({"medsci2med", "medsci2crew", "eng1"}, {"medsci2med": lambda state: state.has("Dead Power Cell", self.player, 2) and self.has_functional_weapon(state), 
                                                                          "medsci2crew": lambda state: state.has("Deck 2 crew Access Card", self.player) and self.has_functional_weapon(state), 
-                                                                         "eng1": lambda state: state.has("WATTS re: Maintenance conduit Audio Log", self.player) and self.has_functional_weapon(state)})
+                                                                         "eng1": lambda state: state.has("WATTS Re: Maintenance conduit Audio Log", self.player) and self.has_functional_weapon(state)})
         medsci2crew_region.add_exits({"medsci2med"}, {"medsci2med": lambda state: state.has("Deck 2 crew Access Card")})
-        eng1_region.add_exits({"eng2", "hydro2"}, {"hydro2": lambda state: state.has("45m/dEx circuit board", self.player) and state.has("SANGER re: Locked in Audio Log", self.player)})
+        eng1_region.add_exits({"eng2", "hydro2"}, {"hydro2": lambda state: state.has("45m/dEx circuit board", self.player) and state.has("SANGER Re: Locked in Audio Log", self.player)})
         hydro2_region.add_exits({"hydro1", "hydro3", "ops2"}, {"hydro1": lambda state: state.has("Hydroponics A Access Card", self.player), 
                                                                "hydro3": lambda state: state.has("Hydroponics D Access Card", self.player),
                                                                "ops2": lambda state: state.has("Toxin-A", self.player, 4) and state.has("Vanadium", self.player) and state.has("Antimony", self.player, 2)
@@ -186,7 +186,7 @@ class SS2World(World):
         ops2_region.add_exits({"rec1", "ops1", "ops3", "ops4"})
         rec1_region.add_exits({"command1", "rec2", "rec3"}, {"command1": lambda state: state.has("Quantum Simulation chip", self.player) and state.has("Linear Simulation chip", self.player) and state.has("Interpolated Simulation chip", self.player) and state.has("Security Access Card", self.player)
                                                              and (state.has("Deck 5 Crew Access Card", self.player) or (state.has("Black-Ops Psionic Amplifier", self.player) and state.has("Metacreative Barrier Psi Ability", self.player) and state.has("Tier 5 Psi Ability", self.player))) and state.has("Dead Power Cell", self.player, 2) and state.has("Athletics Access Card", self.player)})
-        command1_region.add_exits({"command2", "rick1"}, {"rick1": lambda state: state.has("Ops Override Access Card", self.player)})
+        command1_region.add_exits({"command2", "rick1"}, {"rick1": lambda state: state.has("Ops Override Access Card", self.player) and state.has("Shuttle Bay Access Card", self.player) and state.has("Sympathetic Resonator", self.player) and state.has("Bridge Access Card", self.player)})
         rick1_region.add_exits({"rick2"}, {"rick2": lambda state: state.has("Rickenbacker Access Card", self.player)})
         rick2_region.add_exits({"rick3"})
         rick3_region.add_exits({"many"})
@@ -269,6 +269,7 @@ class SS2World(World):
         curcybmodamount += state.count("4 Cyber Modules", self.player) * 4
         curcybmodamount += state.count("5 Cyber Modules", self.player) * 5
         curcybmodamount += state.count("6 Cyber Modules", self.player) * 6
+        curcybmodamount += state.count("7 Cyber Modules", self.player) * 7
         curcybmodamount += state.count("8 Cyber Modules", self.player) * 8
         curcybmodamount += state.count("10 Cyber Modules", self.player) * 10
         return curcybmodamount >= amount
