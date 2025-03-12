@@ -272,6 +272,7 @@ class SS2World(World):
         curcybmodamount += state.count("7 Cyber Modules", self.player) * 7
         curcybmodamount += state.count("8 Cyber Modules", self.player) * 8
         curcybmodamount += state.count("10 Cyber Modules", self.player) * 10
+        curcybmodamount += state.count(, self.player) * 20 #add os upgrade that gives 20 cyb mods here
         return curcybmodamount >= amount
     
     def upgrade_or_cybmod(self, state, item, amount, cybmodamount) -> bool:
