@@ -1,4 +1,4 @@
-from typing import ClassVar, Dict
+from typing import ClassVar, Dict, Any
 from .options import SS2options
 from .items import SS2items, SS2item
 from .locations import SS2locations, SS2location
@@ -25,7 +25,12 @@ class SS2World(World):
 
     item_name_to_id = {name: data["id"] for name, data in SS2items.items()}
     location_name_to_id = {name: data["id"] for name, data in SS2locations.items()}
-    item_name_groups = {}#add weapons
+    item_name_groups = {"Pistols": {"Pistol", "Damaged Pistol"},
+                        "Shotguns": {"Shotgun", "Damaged Shotgun"},
+                        "Assault Rifles": {"Assault Rifle", "Damaged Assault Rifle"},
+                        "Laser Pistols": {"Laser Pistol", "Damaged Laser Pistol"},
+                        "EMP Rifles": {"EMP Rifle", "Damaged EMP Rifle"},
+                        }
 
 
     def create_location(self, locname: str, locregion) -> SS2location:
@@ -35,36 +40,37 @@ class SS2World(World):
     def has_functional_weapon(self, state: CollectionState):
         p = self.player
         apr = state.has("Auto-Repair Unit", p)
-        functional_weapon = (((state.has_group("Pistol", p) or (state.has_group("Broken Pistol", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 1, 17) or apr))) and self.upgrade_or_cybmod(state, "Conventional weapon Upgrade", 1, 21)) or
+        cybmodamount = self.cyb_mod_count(state)
+        functional_weapon = (((state.has_group("Pistols", p) or (state.has("Broken Pistol", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 1, 17, cybmodamount) or apr))) and self.upgrade_or_cybmod(state, "Conventional weapon Upgrade", 1, 21, cybmodamount)) or
                              
-                                ((state.has_group("Shotgun", p) or (state.has_group("Broken Shotgun", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 3, 39) or apr))) and self.upgrade_or_cybmod(state, "Conventional weapon Upgrade", 3, 45)) or
+                            ((state.has_group("Shotguns", p) or (state.has("Broken Shotgun", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 3, 39, cybmodamount) or apr))) and self.upgrade_or_cybmod(state, "Conventional weapon Upgrade", 3, 45, cybmodamount)) or
 
-                                ((state.has_group("Assault Rifle", p) or (state.has_group("Broken Assault Rifle", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 4, 60) or apr))) and self.upgrade_or_cybmod(state, "Conventional weapon Upgrade", 6, 243) and self.upgrade_or_cybmod(state, "Strength Upgrade", 2, 243)) or #upgrade_or_cybmod has combined cybmod costs for requirements because you need all of the requirements to use the weapon.
+                            ((state.has_group("Assault Rifles", p) or (state.has("Broken Assault Rifle", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 4, 60, cybmodamount) or apr))) and self.upgrade_or_cybmod(state, "Conventional weapon Upgrade", 6, 243, cybmodamount) and self.upgrade_or_cybmod(state, "Strength Upgrade", 2, 243, cybmodamount)) or #upgrade_or_cybmod has combined cybmod costs for requirements because you need all of the requirements to use the weapon.
 
-                                ((state.has_group("Laser Pistol", p) or (state.has_group("Broken Laser Pistol", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 1, 17) or apr))) and self.upgrade_or_cybmod(state, "Energy weapon Upgrade", 1, 21)) or
+                            ((state.has_group("Laser Pistols", p) or (state.has("Broken Laser Pistol", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 1, 17, cybmodamount) or apr))) and self.upgrade_or_cybmod(state, "Energy weapon Upgrade", 1, 21, cybmodamount)) or
 
-                                (state.has("Laser Rapier", p) and self.upgrade_or_cybmod(state, "Energy weapon Upgrade", 4, 90) and self.upgrade_or_cybmod(state, "Agility Upgrade", 2, 90)) or
+                            (state.has("Laser Rapier", p) and self.upgrade_or_cybmod(state, "Energy weapon Upgrade", 4, 90, cybmodamount) and self.upgrade_or_cybmod(state, "Agility Upgrade", 2, 90, cybmodamount)) or
 
-                                ((state.has_group("EMP Rifle", p) or (state.has_group("Broken EMP Rifle", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 2, 25) or apr))) and self.upgrade_or_cybmod(state, "Energy weapon Upgrade", 6, 224)) or
+                            ((state.has_group("EMP Rifles", p) or (state.has("Broken EMP Rifle", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 2, 25, cybmodamount) or apr))) and self.upgrade_or_cybmod(state, "Energy weapon Upgrade", 6, 224, cybmodamount)) or
 
-                                ((state.has_group("Grenade Launcher", p) or (state.has_group("Broken Grenade Launcher", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 2, 25) or apr))) and self.upgrade_or_cybmod(state, "Heavy weapon Upgrade", 1, 21)) or
+                            ((state.has("Grenade Launcher", p) or (state.has("Broken Grenade Launcher", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 2, 25, cybmodamount) or apr))) and self.upgrade_or_cybmod(state, "Heavy weapon Upgrade", 1, 21, cybmodamount)) or
 
-                                ((state.has_group("Stasis Field Generator", p) or (state.has_group("Broken Stasis Field Generator", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 3, 39) or apr))) and self.upgrade_or_cybmod(state, "Heavy weapon Upgrade", 3, 90) and self.upgrade_or_cybmod(state, "Strength Upgrade", 3, 90)) or
+                            ((state.has("Damaged Stasis Field Generator", p) or (state.has("Broken Stasis Field Generator", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 3, 39, cybmodamount) or apr))) and self.upgrade_or_cybmod(state, "Heavy weapon Upgrade", 3, 90, cybmodamount) and self.upgrade_or_cybmod(state, "Strength Upgrade", 3, 90, cybmodamount)) or
 
-                                ((state.has_group("Fusion Cannon", p) or (state.has_group("Broken Fusion Cannon", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 4, 60) or apr))) and self.upgrade_or_cybmod(state, "Heavy weapon Upgrade", 6, 322) and self.upgrade_or_cybmod(state, "Strength Upgrade", 4, 322)) or
+                            ((state.has("Damaged Fusion Cannon", p) or (state.has("Broken Fusion Cannon", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 4, 60, cybmodamount) or apr))) and self.upgrade_or_cybmod(state, "Heavy weapon Upgrade", 6, 322, cybmodamount) and self.upgrade_or_cybmod(state, "Strength Upgrade", 4, 322, cybmodamount)) or
 
-                                (state.has("Crystal Shard", p) and self.upgrade_or_cybmod(state, "Exotic weapon Upgrade", 1, 60) and (self.upgrade_or_cybmod(state, "Research Upgrade", 4, 81) or (self.upgrade_or_cybmod(state, "Research Upgrade", 3, 60) and state.has("LabAssistant(TM) Implant", p))) and state.has("Yttrium", p)) or
+                            (state.has("Crystal Shard", p) and self.upgrade_or_cybmod(state, "Exotic weapon Upgrade", 1, 60, cybmodamount) and (self.upgrade_or_cybmod(state, "Research Upgrade", 4, 81, cybmodamount) or (self.upgrade_or_cybmod(state, "Research Upgrade", 3, 60, cybmodamount) and state.has("LabAssistant(TM) Implant", p))) and state.has("Yttrium", p)) or
 
-                                ((state.has_group("Viral Proliferator", p) or (state.has_group("Broken Viral Proliferator", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 4, 60) or apr))) and self.upgrade_or_cybmod(state, "Exotic weapon Upgrade", 4, 71)
-                                and state.has("Technetium", p) and state.has("Tellurium", p)) or
+                            (state.has("Viral Proliferator", p) and self.upgrade_or_cybmod(state, "Exotic weapon Upgrade", 4, 71, cybmodamount)
+                            and state.has("Technetium", p) and state.has("Tellurium", p)) or
 
-                                ((state.has_group("Annelid Launcher", p) or (state.has_group("Broken Annelid Launcher", p) and (self.upgrade_or_cybmod(state, "Repair Upgrade", 5, 104) or apr))) and self.upgrade_or_cybmod(state, "Exotic weapon Upgrade", 6, 418)
-                                and self.upgrade_or_cybmod(state, "Strength Upgrade", 3, 418) and self.upgrade_or_cybmod(state, "Agility Upgrade", 3, 418) and (self.upgrade_or_cybmod(state, "Research Upgrade", 6, 507) or (self.upgrade_or_cybmod(state, "Research Upgrade", 5, 418) and state.has("LabAssistant(TM) Implant", p))) and state.has("Molybdenum", p) and state.has("Selenium", p)) or
-        
-                                (state.has("Black-Ops Psionic Amplifier", p) and self.upgrade_or_cybmod(state, "Psi Upgrade", 2, 41) and ((self.upgrade_or_cybmod(state, "Projected Cryokinesis Psi Ability", 1, 41) and self.upgrade_or_cybmod(state, "Tier 1 Psi Ability", 1, 41)) or 
-                                (state.has("Localized Pyrokinesis Psi Ability", p) and state.has("Tier 2 Psi Ability", p)) or 
-                                (state.has("Projected Pyrokinesis Psi Ability", p) and state.has("Tier 3 Psi Ability", p)) or 
-                                (state.has("Cerebro-Energetic Extension Psi Ability", p) and state.has("Tier 4 Psi Ability", p)))))
+                            (state.has("Annelid Launcher", p) and self.upgrade_or_cybmod(state, "Exotic weapon Upgrade", 6, 418, cybmodamount)
+                            and self.upgrade_or_cybmod(state, "Strength Upgrade", 3, 418, cybmodamount) and self.upgrade_or_cybmod(state, "Agility Upgrade", 3, 418, cybmodamount) and (self.upgrade_or_cybmod(state, "Research Upgrade", 6, 507, cybmodamount) or (self.upgrade_or_cybmod(state, "Research Upgrade", 5, 418, cybmodamount) and state.has("LabAssistant(TM) Implant", p))) and state.has("Molybdenum", p) and state.has("Selenium", p)) or
+    
+                            (state.has("Black-Ops Psionic Amplifier", p) and self.upgrade_or_cybmod(state, "Psi Upgrade", 2, 41, cybmodamount) and ((self.upgrade_or_cybmod(state, "Projected Cryokinesis Psi Ability", 1, 41, cybmodamount) and self.upgrade_or_cybmod(state, "First Tier Neural Capacity Psi Ability", 1, 41, cybmodamount)) or 
+                            (state.has("Localized Pyrokinesis Psi Ability", p) and state.has("Second Tier Neural Capacity Psi Ability", p)) or
+                            (state.has("Projected Pyrokinesis Psi Ability", p) and state.has("Third Tier Neural Capacity Psi Ability", p)) or
+                            (state.has("Cerebro-Energetic Extension Psi Ability", p) and state.has("Fourth Tier Neural Capacity Psi Ability", p)))))
         return functional_weapon
 
     def create_regions(self) -> None:
@@ -137,39 +143,41 @@ class SS2World(World):
             locregion = self.multiworld.get_region(data["region"], self.player)
             loc = self.create_location(location, locregion)
             locregion.locations.append(loc)
-            for reqitem, amount in data["reqitems"]:
+            for reqitem, amount in data["reqitems"].items():
                 match reqitem:
                     case "outofreach": #dynamically create a rule based on the possible methods of accessing a location
                         rules = ""
                         if "blast" in amount:
-                            rules += """((state.has(\"Dual-Circuit EMP Rifle\", self.player) and state.has(\"Energy Weapon Upgrade\", self.player, 6)) or 
+                            rules += """(state.has(\"Dual-Circuit EMP Rifle\", self.player) and state.has(\"Energy Weapon Upgrade\", self.player, 6)) or 
                                     (state.has(\"TC-5 Fusion Cannon\", self.player) and state.has(\"Heavy Weapon Upgrade\", self.player, 6) and state.has(\"Strength Upgrade\", self.player, 3)) or 
                                     (state.has(\"TC-11 Grenade Launcher\", self.player) and state.has(\"Heavy Weapons Upgrade\", self.player)) or 
                                     (state.has(\"Annelid Launcher\", self.player) and state.has(\"Exotic Weapon Upgrade\", self.player, 6) and state.has(\"Strength Upgrade\", self.player, 2) and state.has(\"Agility Upgrade\", self.player, 2)) or 
-                                    (state.has(\"Black-Ops Psionic Amplifier\", self.player) and state.has(\"Projected Cryokinesis Psi Ability\", self.player) and state.has(\"Tier 1 Psi Ability\"))) or"""
+                                    (state.has(\"Black-Ops Psionic Amplifier\", self.player) and state.has(\"Projected Cryokinesis Psi Ability\", self.player) and state.has(\"First Tier Neural Capacity Psi Ability\"))) or"""
                         if "agi" in amount:
                             rules += "(self.upgrade_or_cybmod(state, \"Agility Upgrade\", 5, 187)) or"
                         if "wall" in amount:
-                            rules += "(state.has(\"Black-Ops Psionic Amplifier\", self.player) and state.has(\"Metacreative Barrier Psi Ability\", self.player) and state.has(\"Tier 5 Psi Ability\", self.player)) or"
+                            rules += "(state.has(\"Black-Ops Psionic Amplifier\", self.player) and state.has(\"Metacreative Barrier Psi Ability\", self.player) and state.has(\"Fifth Tier Neural Capacity Psi Ability\", self.player)) or"
                         if "pull" in amount:
-                            rules += "(state.has(\"Black-Ops Psionic Amplifier\", self.player) and state.has(\"Kinetic Redirection Psi Ability\", self.player) and state.has(\"Tier 1 Psi Ability\", self.player)) or"
+                            rules += "(state.has(\"Black-Ops Psionic Amplifier\", self.player) and state.has(\"Kinetic Redirection Psi Ability\", self.player) and state.has(\"First Tier Neural Capacity Psi Ability\", self.player)) or"
                         rules = rules[:-3] #removes the final or
-                        exec("add_rule(loc, lambda state: " + rules)
+                        lambda state: exec("add_rule(loc, lambda state: " + rules)
+                    case "Cyber Modules":
+                        add_rule(loc, lambda state, a = amount: a <= self.cyb_mod_count(state))
                     case "Hacking Upgrade":
                         if self.options.include_stats_skills_psi:
                             add_rule(loc, lambda state, ri = reqitem, a = amount[0]: (state.has(ri, self.player, a) and state.has("Cybernetic Affinity Upgrade", self.player, (a // 2))) or 
-                                    (state.has("Psi Upgrade", self.player, (a*2)-2) and state.has("Black-Ops Psionic Amplifier", self.player) and state.has("Remote Circuitry Manipulation Psi Ability", self.player) and state.has("Tier 4 Psi Ability", self.player)))
+                                    (state.has("Psi Upgrade", self.player, (a*2)-2) and state.has("Black-Ops Psionic Amplifier", self.player) and state.has("Remote Circuitry Manipulation Psi Ability", self.player) and state.has("Fourth Tier Neural Capacity Psi Ability", self.player)))
                         else:
-                            lambda state, ri = reqitem, a = amount[0], cba = amount[1]: self.upgrade_or_cybmod(state, ri, a, cba)
+                            lambda state, ri = reqitem, a = amount[0], cba = amount[1]: self.upgrade_or_cybmod(state, ri, a, cba, self.cyb_mod_count(state))
                     case "Research Upgrade":
                         if self.options.include_stats_skills_psi:
                             add_rule(loc, lambda state, ri = reqitem, a = amount[0]: state.has(ri, self.player, a) or (state.has(ri, self.player, a-1) and state.has("LabAssistant(TM) Implant", self.player)))
                         else:
-                            lambda state, ri = reqitem, a = amount[0], cba = amount[1]: self.upgrade_or_cybmod(state, ri, a, cba)
+                            lambda state, ri = reqitem, a = amount[0], cba = amount[1]: self.upgrade_or_cybmod(state, ri, a, cba, self.cyb_mod_count(state))
                     case [*_, "Ability"] | [*_, "Upgrade"]:
-                        lambda state, ri = reqitem, a = amount[0], cba = amount[1]: self.upgrade_or_cybmod(state, ri, a, cba)
+                        lambda state, ri = reqitem, a = amount[0], cba = amount[1]: self.upgrade_or_cybmod(state, ri, a, cba, self.cyb_mod_count(state))
                     case "Deck 5 Crew Access Card":
-                        add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a) or (state.has("Black-Ops Psionic Amplifier", self.player) and state.has("Metacreative Barrier Psi Ability", self.player) and state.has("Tier 5 Psi Ability", self.player)))
+                        add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a) or (state.has("Black-Ops Psionic Amplifier", self.player) and state.has("Metacreative Barrier Psi Ability", self.player) and state.has("Fifth Tier Neural Capacity Psi Ability", self.player)))
                     case _:
                         add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a))
 
@@ -185,7 +193,7 @@ class SS2World(World):
                                                                and (state.has("Research Upgrade", self.player) or state.has("LabAssistant(TM) Implant", self.player)) and state.has("Hydroponics A Access Card", self.player) and state.has("Hydroponics D Access Card", self.player)})
         ops2_region.add_exits({"rec1", "ops1", "ops3", "ops4"})
         rec1_region.add_exits({"command1", "rec2", "rec3"}, {"command1": lambda state: state.has("Quantum Simulation chip", self.player) and state.has("Linear Simulation chip", self.player) and state.has("Interpolated Simulation chip", self.player) and state.has("Security Access Card", self.player)
-                                                             and (state.has("Deck 5 Crew Access Card", self.player) or (state.has("Black-Ops Psionic Amplifier", self.player) and state.has("Metacreative Barrier Psi Ability", self.player) and state.has("Tier 5 Psi Ability", self.player))) and state.has("Dead Power Cell", self.player, 2) and state.has("Athletics Access Card", self.player)})
+                                                             and (state.has("Deck 5 Crew Access Card", self.player) or (state.has("Black-Ops Psionic Amplifier", self.player) and state.has("Metacreative Barrier Psi Ability", self.player) and state.has("Fifth Tier Neural Capacity Psi Ability", self.player))) and state.has("Dead Power Cell", self.player, 2) and state.has("Athletics Access Card", self.player)})
         command1_region.add_exits({"command2", "rick1"}, {"rick1": lambda state: state.has("Ops Override Access Card", self.player) and state.has("Shuttle Bay Access Card", self.player) and state.has("Sympathetic Resonator", self.player) and state.has("Bridge Access Card", self.player)})
         rick1_region.add_exits({"rick2"}, {"rick2": lambda state: state.has("Rickenbacker Access Card", self.player)})
         rick2_region.add_exits({"rick3"})
@@ -260,9 +268,14 @@ class SS2World(World):
         if self.options.many_is_victory:
             curoptions += "ManyIsVictory"
 
+        if self.options.include_stats_skills_psi:
+            curoptions += "StatsSkillsPsi,"
+        else:
+            curoptions+= "Respec"
+
         return {"options": curoptions}
     
-    def cyb_mod_count(self, state, amount) -> bool: #add any other cyber module items to this
+    def cyb_mod_count(self, state) -> int:
         curcybmodamount = 0
         curcybmodamount += state.count("2 Cyber Modules", self.player) * 2
         curcybmodamount += state.count("3 Cyber Modules", self.player) * 3
@@ -272,12 +285,20 @@ class SS2World(World):
         curcybmodamount += state.count("7 Cyber Modules", self.player) * 7
         curcybmodamount += state.count("8 Cyber Modules", self.player) * 8
         curcybmodamount += state.count("10 Cyber Modules", self.player) * 10
-        curcybmodamount += state.count(, self.player) * 20 #add os upgrade that gives 20 cyb mods here
-        return curcybmodamount >= amount
+        curcybmodamount += state.count("13 Cyber Modules", self.player) * 13
+        curcybmodamount += state.count("14 Cyber Modules", self.player) * 14
+        curcybmodamount += state.count("15 Cyber Modules", self.player) * 15
+        curcybmodamount += state.count("16 Cyber Modules", self.player) * 16
+        curcybmodamount += state.count("20 Cyber Modules", self.player) * 20
+        curcybmodamount += state.count("25 Cyber Modules", self.player) * 25
+        curcybmodamount += state.count("30 Cyber Modules", self.player) * 30
+        if state.has("Naturally Able OSUpgrade", self.player):
+            curcybmodamount += 20
+        return curcybmodamount
     
-    def upgrade_or_cybmod(self, state, item, amount, cybmodamount) -> bool:
+    def upgrade_or_cybmod(self, state, item, amount, cybmodamount, curcybmodamount) -> bool:
         if self.options.include_stats_skills_psi:
             return state.has(item, self.player, amount)
         else:
-            return self.cyb_mod_count(state, cybmodamount)
+            return cybmodamount >= curcybmodamount
             

@@ -6,7 +6,6 @@ class IncludeStatsSkillsPsi(DefaultOnToggle):
     """Include Technical Skills, Weapon Skills, Statistics, Psi Tier unlocks, and Psi ability unlocks in the randomizer."""
     display_name = "Include Tech Skills, Weapon Skills, Stats, and Psi" 
 
-
 class IncludeOSUpgrades(DefaultOnToggle):
     """Include OSUpgrades in the randomizer."""
     display_name = "Include OSUpgrades"
@@ -22,7 +21,7 @@ class ManyIsVictory(Toggle):
 
 @dataclass
 class SS2options(PerGameCommonOptions):
-    #include_stats_skills_psi: IncludeStatsSkillsPsi
+    include_stats_skills_psi: IncludeStatsSkillsPsi
     include_os_upgrades: IncludeOSUpgrades
     include_starting_wrench: IncludeStartingWrench
     many_is_victory: ManyIsVictory
