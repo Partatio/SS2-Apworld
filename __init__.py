@@ -174,7 +174,7 @@ class SS2World(World):
                             add_rule(loc, lambda state, ri = reqitem, a = amount[0]: state.has(ri, self.player, a) or (state.has(ri, self.player, a-1) and state.has("LabAssistant(TM) Implant", self.player)))
                         else:
                             lambda state, ri = reqitem, a = amount[0], cba = amount[1]: self.upgrade_or_cybmod(state, ri, a, cba, self.cyb_mod_count(state))
-                    case [*_, "Ability"] | [*_, "Upgrade"]:
+                    case "Repair Upgrade":
                         lambda state, ri = reqitem, a = amount[0], cba = amount[1]: self.upgrade_or_cybmod(state, ri, a, cba, self.cyb_mod_count(state))
                     case "Deck 5 Crew Access Card":
                         add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a) or (state.has("Black-Ops Psionic Amplifier", self.player) and state.has("Metacreative Barrier Psi Ability", self.player) and state.has("Fifth Tier Neural Capacity Psi Ability", self.player)))
@@ -185,7 +185,7 @@ class SS2World(World):
         medsci1_region.add_exits({"medsci2med", "medsci2crew", "eng1"}, {"medsci2med": lambda state: state.has("Dead Power Cell", self.player, 2) and self.has_functional_weapon(state), 
                                                                          "medsci2crew": lambda state: state.has("Deck 2 crew Access Card", self.player) and self.has_functional_weapon(state), 
                                                                          "eng1": lambda state: state.has("WATTS Re: Maintenance conduit Audio Log", self.player) and self.has_functional_weapon(state)})
-        medsci2crew_region.add_exits({"medsci2med"}, {"medsci2med": lambda state: state.has("Deck 2 crew Access Card")})
+        medsci2crew_region.add_exits({"medsci2med"}, {"medsci2med": lambda state: state.has("Deck 2 crew Access Card", self.player)})
         eng1_region.add_exits({"eng2", "hydro2"}, {"hydro2": lambda state: state.has("45m/dEx circuit board", self.player) and state.has("SANGER Re: Locked in Audio Log", self.player)})
         hydro2_region.add_exits({"hydro1", "hydro3", "ops2"}, {"hydro1": lambda state: state.has("Hydroponics A Access Card", self.player), 
                                                                "hydro3": lambda state: state.has("Hydroponics D Access Card", self.player),
@@ -246,9 +246,9 @@ class SS2World(World):
         for item, data in SS2items.items():
             if data["option"] not in curoptions:
                 continue
-            newitem = self.create_item(item)
             amount = data["count"]
             while amount > 0:
+                newitem = self.create_item(item)
                 SS2itempool.append(newitem)
                 amount -= 1
     
