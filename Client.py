@@ -4,6 +4,7 @@ import Utils
 from tkinter import filedialog
 import os
 
+from NetUtils import ClientStatus
 from CommonClient import ClientCommandProcessor, CommonContext, gui_enabled, logger, server_loop, get_base_parser
 
 class SS2CommandProcessor(ClientCommandProcessor):
@@ -25,7 +26,7 @@ class SS2Context(CommonContext):
         self.seed = 0
         self.is_connected = False
 
-        self.SS2DirPath = filedialog.askdirectory(title="Select System Shock 2 installation folder", mustexist = True)
+        self.ss2_dir_path = filedialog.askdirectory(title="Select System Shock 2 installation folder")
         self.recieved_items_file = os.path.join(self.SS2DirPath + "/DMM/Archipelago/data/ReceivedItems.txt")
         self.sent_items_file = os.path.join(self.SS2DirPath + "/DMM/Archipelago/data/SentItems.txt")
         self.settings_file = os.path.join(self.SS2DirPath + "/DMM/Archipelago/data/Settings.txt")
@@ -103,7 +104,7 @@ async def loc_watcher(ctx):
                 for entry in entries:
                     if "pylocid" in entry.name:
                         if entry.name == "pylocid2.txt":
-                            asyncio.create_task(ctx.send_msgs([{"cmd": "StatusUpdate", "status": 30}]))#goal
+                            asyncio.create_task(ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]))
                             continue
                         locs.append(int(entry.name.replace("pylocid","").replace(".txt", "")))
                         #os.remove(entry.path)
