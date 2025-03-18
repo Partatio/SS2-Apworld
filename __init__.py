@@ -9,11 +9,11 @@ from worlds.LauncherComponents import launch_subprocess, components, Component, 
 
 from Utils import visualize_regions
 
-def launch_client():
-    from .Client import launch
-    launch_subprocess(launch, "SS2Client")
+def launch_client(*args):
+    from .Client import launch_subprocess
+    launch_subprocess(launch_subprocess, "SS2Client", args)
 
-components.append(Component("System Shock 2 Client", "SS2Client",
+components.append(Component("System Shock 2 Client",
                   func=launch_client, component_type=Type.CLIENT))
 
 class SS2World(World):

@@ -27,9 +27,9 @@ class SS2Context(CommonContext):
         self.is_connected = False
 
         self.ss2_dir_path = filedialog.askdirectory(title="Select System Shock 2 installation folder")
-        self.recieved_items_file = os.path.join(self.ss2_dir_path + "/DMM/Archipelago/data/ReceivedItems.txt")
-        self.sent_items_file = os.path.join(self.ss2_dir_path + "/DMM/Archipelago/data/SentItems.txt")
-        self.settings_file = os.path.join(self.ss2_dir_path + "/DMM/Archipelago/data/Settings.txt")
+        self.recieved_items_file = os.path.join(self.ss2_dir_path, "/DMM/Archipelago/data/ReceivedItems.txt")
+        self.sent_items_file = os.path.join(self.ss2_dir_path, "/DMM/Archipelago/data/SentItems.txt")
+        self.settings_file = os.path.join(self.ss2_dir_path, "/DMM/Archipelago/data/Settings.txt")
 
     async def disconnect(self, allow_autoreconnect: bool = False):
         self.auth = None
@@ -82,14 +82,10 @@ class SS2Context(CommonContext):
                 for item in args["items"]:
                     f.write(item["item"] + ",")
     
-    def run_gui(self):
-        from kvui import GameManager
-
-        class SS2Manager(GameManager):
-            base_title = "Archipelago System Shock 2 Client"
-
-        self.ui = SS2Manager(self)
-        self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
+    def make_gui(self):
+        ui = super().make_gui()
+        ui.base_title = "Archipelago System Shock 2 Client"
+        return ui
 
 def print_error_and_close(msg):
     logger.error("Error: " + msg)
@@ -112,7 +108,7 @@ async def loc_watcher(ctx):
                 asyncio.create_task(ctx.send_msgs([{"cmd": "LocationChecks", "locations": locs}]))
         await asyncio.sleep(2)
 
-def launch():
+def launch_subprocess(*args):
     async def main(args):
         ctx = SS2Context(args.connect, args.password)
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
@@ -121,7 +117,7 @@ def launch():
         await loc_watcher_task
 
         if gui_enabled:
-            ctx.run_gui()
+            ctx.make_gui()
         ctx.run_cli()
 
         await ctx.exit_event.wait()
@@ -130,10 +126,10 @@ def launch():
         await ctx.shutdown()
 
     parser = get_base_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(args)
 
     import colorama
 
-    colorama.init()
+    colorama.just_fix_windows_console()
     asyncio.run(main(args))
     colorama.deinit()
