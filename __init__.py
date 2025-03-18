@@ -145,22 +145,15 @@ class SS2World(World):
             locregion.locations.append(loc)
             for reqitem, amount in data["reqitems"].items():
                 match reqitem:
-                    case "outofreach": #dynamically create a rule based on the possible methods of accessing a location
-                        rules = ""
-                        if "blast" in amount:
-                            rules += """(state.has(\"Dual-Circuit EMP Rifle\", self.player) and state.has(\"Energy Weapon Upgrade\", self.player, 6)) or 
-                                    (state.has(\"TC-5 Fusion Cannon\", self.player) and state.has(\"Heavy Weapon Upgrade\", self.player, 6) and state.has(\"Strength Upgrade\", self.player, 3)) or 
-                                    (state.has(\"TC-11 Grenade Launcher\", self.player) and state.has(\"Heavy Weapons Upgrade\", self.player)) or 
-                                    (state.has(\"Annelid Launcher\", self.player) and state.has(\"Exotic Weapon Upgrade\", self.player, 6) and state.has(\"Strength Upgrade\", self.player, 2) and state.has(\"Agility Upgrade\", self.player, 2)) or 
-                                    (state.has(\"Black-Ops Psionic Amplifier\", self.player) and state.has(\"Projected Cryokinesis Psi Ability\", self.player) and state.has(\"First Tier Neural Capacity Psi Ability\"))) or"""
-                        if "agi" in amount:
-                            rules += "(self.upgrade_or_cybmod(state, \"Agility Upgrade\", 5, 187)) or"
+                    case "outofreach":
+                        if "wall" in amount and "pull" in amount:
+                            add_rule(loc, lambda state: (state.has("Black-Ops Psionic Amplifier", self.player) and self.upgrade_or_cybmod(state, "Metacreative Barrier Psi Ability", 1, 169, curcba := self.cyb_mod_count(state)) and self.upgrade_or_cybmod(state, "Fifth Tier Neural Capacity Psi Ability", 1, 169, curcba)) 
+                                                        or (state.has("Black-Ops Psionic Amplifier", self.player) and self.upgrade_or_cybmod(state, "Kinetic Redirection Psi Ability", 1, 22, curcba := self.cyb_mod_count(state)) and self.upgrade_or_cybmod(state, "First Tier Neural Capacity Psi Ability", 1, 22, curcba)))
+                            continue
                         if "wall" in amount:
-                            rules += "(state.has(\"Black-Ops Psionic Amplifier\", self.player) and state.has(\"Metacreative Barrier Psi Ability\", self.player) and state.has(\"Fifth Tier Neural Capacity Psi Ability\", self.player)) or"
+                            add_rule(loc, lambda state: state.has("Black-Ops Psionic Amplifier", self.player) and self.upgrade_or_cybmod(state, "Metacreative Barrier Psi Ability", 1, 169, curcba := self.cyb_mod_count(state)) and self.upgrade_or_cybmod(state, "Fifth Tier Neural Capacity Psi Ability", 1, 169, curcba))
                         if "pull" in amount:
-                            rules += "(state.has(\"Black-Ops Psionic Amplifier\", self.player) and state.has(\"Kinetic Redirection Psi Ability\", self.player) and state.has(\"First Tier Neural Capacity Psi Ability\", self.player)) or"
-                        rules = rules[:-3] #removes the final or
-                        lambda state: exec("add_rule(loc, lambda state: " + rules)
+                            add_rule(loc, lambda state: state.has("Black-Ops Psionic Amplifier", self.player) and self.upgrade_or_cybmod(state, "Kinetic Redirection Psi Ability", 1, 22, curcba := self.cyb_mod_count(state)) and self.upgrade_or_cybmod(state, "First Tier Neural Capacity Psi Ability", 1, 22, curcba))
                     case "Cyber Modules":
                         add_rule(loc, lambda state, a = amount: a <= self.cyb_mod_count(state))
                     case "Hacking Upgrade":
@@ -168,16 +161,19 @@ class SS2World(World):
                             add_rule(loc, lambda state, ri = reqitem, a = amount[0]: (state.has(ri, self.player, a) and state.has("Cybernetic Affinity Upgrade", self.player, (a // 2))) or 
                                     (state.has("Psi Upgrade", self.player, (a*2)-2) and state.has("Black-Ops Psionic Amplifier", self.player) and state.has("Remote Circuitry Manipulation Psi Ability", self.player) and state.has("Fourth Tier Neural Capacity Psi Ability", self.player)))
                         else:
-                            lambda state, ri = reqitem, a = amount[0], cba = amount[1]: self.upgrade_or_cybmod(state, ri, a, cba, self.cyb_mod_count(state))
+                            add_rule(loc, lambda state, ri = reqitem, a = amount[0], cba = amount[1]: self.upgrade_or_cybmod(state, ri, a, cba, self.cyb_mod_count(state)))
                     case "Research Upgrade":
                         if self.options.include_stats_skills_psi:
                             add_rule(loc, lambda state, ri = reqitem, a = amount[0]: state.has(ri, self.player, a) or (state.has(ri, self.player, a-1) and state.has("LabAssistant(TM) Implant", self.player)))
                         else:
-                            lambda state, ri = reqitem, a = amount[0], cba = amount[1]: self.upgrade_or_cybmod(state, ri, a, cba, self.cyb_mod_count(state))
+                            add_rule(loc, lambda state, ri = reqitem, a = amount[0], cba = amount[1]: self.upgrade_or_cybmod(state, ri, a, cba, self.cyb_mod_count(state)))
                     case "Repair Upgrade":
-                        lambda state, ri = reqitem, a = amount[0], cba = amount[1]: self.upgrade_or_cybmod(state, ri, a, cba, self.cyb_mod_count(state))
+                        add_rule(loc, lambda state, ri = reqitem, a = amount[0], cba = amount[1]: self.upgrade_or_cybmod(state, ri, a, cba, self.cyb_mod_count(state)))
                     case "Deck 5 Crew Access Card":
-                        add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a) or (state.has("Black-Ops Psionic Amplifier", self.player) and state.has("Metacreative Barrier Psi Ability", self.player) and state.has("Fifth Tier Neural Capacity Psi Ability", self.player)))
+                        if self.options.include_stats_skills_psi:
+                            add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a) or (state.has("Black-Ops Psionic Amplifier", self.player) and state.has("Metacreative Barrier Psi Ability", self.player) and state.has("Fifth Tier Neural Capacity Psi Ability", self.player)))
+                        else:
+                            add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a) or 169 <= self.cyb_mod_count(state))
                     case _:
                         add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a))
 
@@ -190,10 +186,10 @@ class SS2World(World):
         hydro2_region.add_exits({"hydro1", "hydro3", "ops2"}, {"hydro1": lambda state: state.has("Hydroponics A Access Card", self.player), 
                                                                "hydro3": lambda state: state.has("Hydroponics D Access Card", self.player),
                                                                "ops2": lambda state: state.has("Toxin-A", self.player, 4) and state.has("Vanadium", self.player) and state.has("Antimony", self.player, 2)
-                                                               and (state.has("Research Upgrade", self.player) or state.has("LabAssistant(TM) Implant", self.player)) and state.has("Hydroponics A Access Card", self.player) and state.has("Hydroponics D Access Card", self.player)})
+                                                               and (self.upgrade_or_cybmod(state, "Research Upgrade", 1, 17, self.cyb_mod_count(state)) or state.has("LabAssistant(TM) Implant", self.player)) and state.has("Hydroponics A Access Card", self.player) and state.has("Hydroponics D Access Card", self.player)})
         ops2_region.add_exits({"rec1", "ops1", "ops3", "ops4"})
-        rec1_region.add_exits({"command1", "rec2", "rec3"}, {"command1": lambda state: state.has("Quantum Simulation chip", self.player) and state.has("Linear Simulation chip", self.player) and state.has("Interpolated Simulation chip", self.player) and state.has("Security Access Card", self.player)
-                                                             and (state.has("Deck 5 Crew Access Card", self.player) or (state.has("Black-Ops Psionic Amplifier", self.player) and state.has("Metacreative Barrier Psi Ability", self.player) and state.has("Fifth Tier Neural Capacity Psi Ability", self.player))) and state.has("Dead Power Cell", self.player, 2) and state.has("Athletics Access Card", self.player)})
+        rec1_region.add_exits({"command1", "rec2", "rec3"}, {"command1": lambda state: state.has("Quantum Simulation Chip", self.player) and state.has("Linear Simulation Chip", self.player) and state.has("Interpolated Simulation Chip", self.player) and state.has("Security Access Card", self.player)
+                                                             and (state.has("Deck 5 Crew Access Card", self.player) or (state.has("Black-Ops Psionic Amplifier", self.player) and self.upgrade_or_cybmod(state, "Metacreative Barrier Psi Ability", 1, 169, self.cyb_mod_count(state)) and self.upgrade_or_cybmod(state, "Fifth Tier Neural Capacity Psi Ability", 1, 169, self.cyb_mod_count(state)))) and state.has("Dead Power Cell", self.player, 2) and state.has("Athletics Access Card", self.player)})
         command1_region.add_exits({"command2", "rick1"}, {"rick1": lambda state: state.has("Ops Override Access Card", self.player) and state.has("Shuttle Bay Access Card", self.player) and state.has("Sympathetic Resonator", self.player) and state.has("Bridge Access Card", self.player)})
         rick1_region.add_exits({"rick2"}, {"rick2": lambda state: state.has("Rickenbacker Access Card", self.player)})
         rick2_region.add_exits({"rick3"})
@@ -257,8 +253,6 @@ class SS2World(World):
     def fill_slot_data(self) -> Dict[str, Any]:
         curoptions = ""
 
-        curoptions += "None,"
-
         if self.options.include_os_upgrades:
             curoptions += "OSUpgrades,"
 
@@ -300,5 +294,5 @@ class SS2World(World):
         if self.options.include_stats_skills_psi:
             return state.has(item, self.player, amount)
         else:
-            return cybmodamount >= curcybmodamount
+            return cybmodamount <= curcybmodamount
             

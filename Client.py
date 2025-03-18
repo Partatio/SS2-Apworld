@@ -1,10 +1,8 @@
-import websockets
 import asyncio
-import Utils
 import sys
-import tkinter as tk
+import Utils
+from tkinter import filedialog
 import os
-import threading
 
 from CommonClient import ClientCommandProcessor, CommonContext, gui_enabled, logger, server_loop, get_base_parser
 
@@ -17,18 +15,20 @@ class SS2Context(CommonContext):
     game = "System Shock 2"
     items_handling = 0b111  # full remote
 
-    SS2DirPath = None
-    recieved_items_file = None
-    sent_items_file = None
-    settings_file = None
-    seed = None
-    is_connected = False
+
 
     def __init__(self, server_address, password):
         super(SS2Context, self).__init__(server_address, password)
         self.send_index: int = 0
         self.syncing = False
         self.awaiting_bridge = False
+        self.seed = 0
+        self.is_connected = False
+
+        self.SS2DirPath = filedialog.askdirectory(title="Select System Shock 2 installation folder", mustexist = True)
+        self.recieved_items_file = os.path.join(self.SS2DirPath + "/DMM/Archipelago/data/ReceivedItems.txt")
+        self.sent_items_file = os.path.join(self.SS2DirPath + "/DMM/Archipelago/data/SentItems.txt")
+        self.settings_file = os.path.join(self.SS2DirPath + "/DMM/Archipelago/data/Settings.txt")
 
     async def disconnect(self, allow_autoreconnect: bool = False):
         self.auth = None
@@ -65,13 +65,13 @@ class SS2Context(CommonContext):
 
         if cmd in {"Connected"}:
             with open(self.recieved_items_file, "w") as f:
-                f.write(self.seed + ",")
+                f.write(str(self.seed) + ",")
 
             with open(self.sent_items_file, "w") as f:
                 f.write(args["checked_locations"])
 
             with open(self.settings_file, "w") as f:
-                f.write(self.seed + ",")
+                f.write(str(self.seed) + ",")
                 f.write(args["slot_info"]["options"])
 
             self.is_connected = True
@@ -85,7 +85,6 @@ class SS2Context(CommonContext):
         from kvui import GameManager
 
         class SS2Manager(GameManager):
-            # logging_pairs for any separate logging tabs
             base_title = "Archipelago System Shock 2 Client"
 
         self.ui = SS2Manager(self)
@@ -96,16 +95,20 @@ def print_error_and_close(msg):
     Utils.messagebox("Error", msg, error=True)
     sys.exit(1)
 
-async def loc_watcher(self):
+async def loc_watcher(ctx):
     while True:
-        if self.is_connected:
-            with os.scandir(self.SS2DirPath) as entries:
+        if ctx.is_connected:
+            locs = []
+            with os.scandir(ctx.SS2DirPath) as entries:
                 for entry in entries:
                     if "pylocid" in entry.name:
                         if entry.name == "pylocid2.txt":
-                            asyncio.create_task(self.send_msgs([{"cmd": "StatusUpdate", "status": 30}]))#goal
-                        asyncio.create_task(self.send_msgs([{"cmd": "LocationChecks", "locations": [int(entry.name.replace("pylocid","").replace(".txt", ""))]}]))
-                        #os.remove(entry.path) #test before uncommenting
+                            asyncio.create_task(ctx.send_msgs([{"cmd": "StatusUpdate", "status": 30}]))#goal
+                            continue
+                        locs.append(int(entry.name.replace("pylocid","").replace(".txt", "")))
+                        #os.remove(entry.path)
+            if locs:
+                asyncio.create_task(ctx.send_msgs([{"cmd": "LocationChecks", "locations": locs}]))
         await asyncio.sleep(2)
 
 def launch():
@@ -113,7 +116,7 @@ def launch():
         ctx = SS2Context(args.connect, args.password)
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
 
-        loc_watcher_task = asyncio.create_task(loc_watcher())
+        loc_watcher_task = asyncio.create_task(loc_watcher(ctx))
         await loc_watcher_task
 
         if gui_enabled:
@@ -124,12 +127,6 @@ def launch():
         ctx.server_address = None
 
         await ctx.shutdown()
-
-    SS2DirPath = tk.filedialog.askdirectory(title="Select System Shock 2 installation folder", 
-                                            filetypes=[("SS2", "SS2")])
-    recieved_items_file = SS2DirPath + "\\DMM\\Archipelago\\data\\ReceivedItems.txt"
-    sent_items_file = SS2DirPath + "\\DMM\\Archipelago\\data\\SentItems.txt"
-    settings_file = SS2DirPath + "\\DMM\\Archipelago\\data\\Settings.txt"
 
     parser = get_base_parser()
     args = parser.parse_args()
