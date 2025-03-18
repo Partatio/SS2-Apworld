@@ -5,13 +5,13 @@ from .locations import SS2locations, SS2location
 from worlds.AutoWorld import World
 from worlds.generic.Rules import add_rule
 from BaseClasses import Region, Location, Entrance, Item, ItemClassification, CollectionState
-from worlds.LauncherComponents import launch_subprocess, components, Component, Type
+from worlds.LauncherComponents import components, Component, Type, launch as launch_component
 
 from Utils import visualize_regions
 
 def launch_client(*args):
-    from .Client import launch_subprocess
-    launch_subprocess(launch_subprocess, "SS2Client", args)
+    from .Client import launch
+    launch_component(launch, "SS2Client", args)
 
 components.append(Component("System Shock 2 Client",
                   func=launch_client, component_type=Type.CLIENT))

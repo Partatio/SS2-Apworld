@@ -108,7 +108,7 @@ async def loc_watcher(ctx):
                 asyncio.create_task(ctx.send_msgs([{"cmd": "LocationChecks", "locations": locs}]))
         await asyncio.sleep(2)
 
-def launch_subprocess(*args):
+def launch(*args):
     async def main(args):
         ctx = SS2Context(args.connect, args.password)
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
