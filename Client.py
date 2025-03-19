@@ -4,6 +4,7 @@ import Utils
 from tkinter import filedialog
 import os
 
+from .settings import SS2Settings
 from NetUtils import ClientStatus
 from CommonClient import ClientCommandProcessor, CommonContext, gui_enabled, logger, server_loop, get_base_parser
 
@@ -26,10 +27,12 @@ class SS2Context(CommonContext):
         self.seed = 0
         self.is_connected = False
 
-        self.ss2_dir_path = filedialog.askdirectory(title="Select System Shock 2 installation folder")
-        self.recieved_items_file = os.path.join(self.ss2_dir_path, "/DMM/Archipelago/data/ReceivedItems.txt")
-        self.sent_items_file = os.path.join(self.ss2_dir_path, "/DMM/Archipelago/data/SentItems.txt")
-        self.settings_file = os.path.join(self.ss2_dir_path, "/DMM/Archipelago/data/Settings.txt")
+        self.ss2_dir_path = SS2Settings.ss2_path
+        if not os.path.exists(self.ss2_dir_path):
+            self.ss2_dir_path = filedialog.askdirectory(title="Select System Shock 2 installation folder")
+        self.recieved_items_file = os.path.join(self.ss2_dir_path + "\\DMM\\Archipelago\\data\\ReceivedItems.txt")
+        self.sent_items_file = os.path.join(self.ss2_dir_path + "\\DMM\\Archipelago\\data\\SentItems.txt")
+        self.settings_file = os.path.join(self.ss2_dir_path + "\\DMM\\Archipelago\\data\\Settings.txt")
 
     async def disconnect(self, allow_autoreconnect: bool = False):
         self.auth = None
@@ -69,18 +72,18 @@ class SS2Context(CommonContext):
                 f.write(str(self.seed) + ",")
 
             with open(self.sent_items_file, "w") as f:
-                f.write(args["checked_locations"])
+                f.write(str(args["checked_locations"]))
 
             with open(self.settings_file, "w") as f:
                 f.write(str(self.seed) + ",")
-                f.write(args["slot_info"]["options"])
+                f.write(str(args["slot_data"]["options"]))
 
             self.is_connected = True
 
         if cmd in {"ReceivedItems"}:
             with open(self.recieved_items_file, "a") as f:
                 for item in args["items"]:
-                    f.write(item["item"] + ",")
+                    f.write(str(item[0]) + ",")
     
     def make_gui(self):
         ui = super().make_gui()
@@ -93,17 +96,18 @@ def print_error_and_close(msg):
     sys.exit(1)
 
 async def loc_watcher(ctx):
-    while True:
+    while not ctx.exit_event.is_set():
         if ctx.is_connected:
             locs = []
-            with os.scandir(ctx.SS2DirPath) as entries:
+            with os.scandir(ctx.ss2_dir_path) as entries:
                 for entry in entries:
                     if "pylocid" in entry.name:
+                        print(entry.name)
                         if entry.name == "pylocid2.txt":
                             asyncio.create_task(ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]))
                             continue
                         locs.append(int(entry.name.replace("pylocid","").replace(".txt", "")))
-                        #os.remove(entry.path)
+                        os.remove(entry.path)
             if locs:
                 asyncio.create_task(ctx.send_msgs([{"cmd": "LocationChecks", "locations": locs}]))
         await asyncio.sleep(2)
@@ -114,14 +118,15 @@ def launch(*args):
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
 
         loc_watcher_task = asyncio.create_task(loc_watcher(ctx))
-        await loc_watcher_task
 
         if gui_enabled:
-            ctx.make_gui()
+            ctx.run_gui()
         ctx.run_cli()
 
         await ctx.exit_event.wait()
         ctx.server_address = None
+
+        await loc_watcher_task
 
         await ctx.shutdown()
 
