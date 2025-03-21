@@ -93,6 +93,10 @@ class SS2World(World):
         self.multiworld.regions.append(menu_region)
         medsci1_region = Region("medsci1", self.player, self.multiworld)
         self.multiworld.regions.append(medsci1_region)
+        medsci1sci_region = Region("medsci1sci", self.player, self.multiworld)
+        self.multiworld.regions.append(medsci1sci_region)
+        medsci1rd_region = Region("medsci1rd", self.player, self.multiworld)
+        self.multiworld.regions.append(medsci1rd_region)
         medsci2med_region = Region("medsci2med", self.player, self.multiworld)
         self.multiworld.regions.append(medsci2med_region)
         medsci2crew_region = Region("medsci2crew", self.player, self.multiworld)
@@ -178,9 +182,11 @@ class SS2World(World):
                         add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a))
 
         menu_region.add_exits({"medsci1"})
-        medsci1_region.add_exits({"medsci2med", "medsci2crew", "eng1"}, {"medsci2med": lambda state: state.has("Dead Power Cell", self.player, 2) and self.has_functional_weapon(state), 
-                                                                         "medsci2crew": lambda state: state.has("Deck 2 crew Access Card", self.player) and self.has_functional_weapon(state), 
-                                                                         "eng1": lambda state: state.has("WATTS Re: Maintenance conduit Audio Log", self.player) and self.has_functional_weapon(state)})
+        medsci1_region.add_exits({"medsci1sci"}, {"medsci1sci": lambda state: state.has("Science Access Card", self.player)})
+        medsci1sci_region.add_exits({"medsci1rd", "medsci2med", "medsci2crew", "eng1"}, {"medsci1rd": lambda state: state.has("R & D Access Card", self.player),
+                                                                                        "medsci2med": lambda state: state.has("Dead Power Cell", self.player, 2) and self.has_functional_weapon(state), 
+                                                                                        "medsci2crew": lambda state: state.has("Deck 2 crew Access Card", self.player) and self.has_functional_weapon(state), 
+                                                                                        "eng1": lambda state: state.has("WATTS Re: Maintenance conduit Audio Log", self.player) and self.has_functional_weapon(state)})
         medsci2crew_region.add_exits({"medsci2med"}, {"medsci2med": lambda state: state.has("Deck 2 crew Access Card", self.player)})
         eng1_region.add_exits({"eng2", "hydro2"}, {"hydro2": lambda state: state.has("45m/dEx circuit board", self.player) and state.has("SANGER Re: Locked in Audio Log", self.player)})
         hydro2_region.add_exits({"hydro1", "hydro3", "ops2"}, {"hydro1": lambda state: state.has("Hydroponics A Access Card", self.player), 

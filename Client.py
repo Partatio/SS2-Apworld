@@ -72,7 +72,8 @@ class SS2Context(CommonContext):
                 f.write(str(self.seed) + ",")
 
             with open(self.sent_items_file, "w") as f:
-                f.write(str(args["checked_locations"]))
+                f.write("0,")
+                f.write(str(args["checked_locations"]).rstrip("]").lstrip("["))
 
             with open(self.settings_file, "w") as f:
                 f.write(str(self.seed) + ",")
@@ -102,11 +103,13 @@ async def loc_watcher(ctx):
             with os.scandir(ctx.ss2_dir_path) as entries:
                 for entry in entries:
                     if "pylocid" in entry.name:
-                        print(entry.name)
                         if entry.name == "pylocid2.txt":
                             asyncio.create_task(ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]))
                             continue
-                        locs.append(int(entry.name.replace("pylocid","").replace(".txt", "")))
+                        locid = int(entry.name.replace("pylocid","").replace(".txt", ""))
+                        locs.append(locid)
+                        with open(ctx.sent_items_file, "a") as f:
+                            f.write(str(locid) + ",")
                         os.remove(entry.path)
             if locs:
                 asyncio.create_task(ctx.send_msgs([{"cmd": "LocationChecks", "locations": locs}]))
