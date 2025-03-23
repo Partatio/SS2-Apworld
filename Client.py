@@ -1,6 +1,4 @@
 import asyncio
-import sys
-import Utils
 from tkinter import filedialog
 import os
 

@@ -300,7 +300,7 @@ SS2items: Dict[str, ItemDict] = {
     "classification": "filler",
     "count": 1,
     "option": ""},
-"SUAREZ Re:100% Torture Audio Log": {"id": 74,
+"SUAREZ Re: 100% Torture Audio Log": {"id": 74,
     "classification": "filler",
     "count": 1,
     "option": ""},

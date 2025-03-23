@@ -5,16 +5,15 @@ from .locations import SS2locations, SS2location
 from worlds.AutoWorld import World
 from worlds.generic.Rules import add_rule
 from BaseClasses import Region, Location, Entrance, Item, ItemClassification, CollectionState
-from worlds.LauncherComponents import components, Component, Type, launch as launch_component
+from worlds.LauncherComponents import components, Component, Type, launch_subprocess
 
 from Utils import visualize_regions
 
 def launch_client(*args):
     from .Client import launch
-    launch_component(launch, "SS2Client", args)
+    launch_subprocess(launch, "SS2Client", args) #todo when 6.0 update: change launch_subprocess import to "launch as launch_component" and change launch_subprocess in this line to launch_component.
 
-components.append(Component("System Shock 2 Client",
-                  func=launch_client, component_type=Type.CLIENT))
+components.append(Component("System Shock 2 Client", func=launch_client, component_type=Type.CLIENT))
 
 class SS2World(World):
     """System Shock 2 item, enemy, skill, stat, and psi randomizer."""
