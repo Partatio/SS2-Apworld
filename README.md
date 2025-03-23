@@ -11,7 +11,7 @@ System Shock 2 with [SS2Tool](https://www.systemshock.org/index.php?topic=4141.0
 The latest [release](https://github.com/Partatio/SS2Archipelago/releases) of the Archipelago System Shock 2 mod.
 
 ## Installation
-Install the AP world by opening it with Archipelago, or by manually placing it in /lib/worlds/ of your Archipelago installation.
+Install the AP world by opening it with Archipelago, or using Install APWorld in the Archipelago Launcher, or by manually placing it in Archipelago/custom_worlds.
 
 Install SCP beta6 and the Archipelago mod using [ss2bmm](https://pshjt.github.io/dmm/) included with the SS2Tool installation.  Make sure to activate them and put SCP_beta6 at the lowest priority.
 
