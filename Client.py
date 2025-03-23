@@ -34,10 +34,6 @@ class SS2Context(CommonContext):
         self.sent_items_file = os.path.join(self.ss2_dir_path + "\\DMM\\Archipelago\\data\\SentItems.txt")
         self.settings_file = os.path.join(self.ss2_dir_path + "\\DMM\\Archipelago\\data\\Settings.txt")
 
-    async def disconnect(self, allow_autoreconnect: bool = False):
-        self.auth = None
-        await super().disconnect(allow_autoreconnect)
-
     async def server_auth(self, password_requested: bool = False):
         # This is called to autentificate with the server.
         if password_requested and not self.password:
@@ -73,7 +69,7 @@ class SS2Context(CommonContext):
 
             with open(self.sent_items_file, "w") as f:
                 f.write("0, ")
-                f.write(str(args["checked_locations"]).rstrip("]").lstrip("[") + ",")
+                f.write(str(args["checked_locations"]).strip("[]") + ",")
 
             with open(self.settings_file, "w") as f:
                 f.write(str(self.seed) + ",")
@@ -91,11 +87,6 @@ class SS2Context(CommonContext):
         ui.base_title = "Archipelago System Shock 2 Client"
         return ui
 
-def print_error_and_close(msg):
-    logger.error("Error: " + msg)
-    Utils.messagebox("Error", msg, error=True)
-    sys.exit(1)
-
 async def loc_watcher(ctx):
     while not ctx.exit_event.is_set():
         if ctx.is_connected:
@@ -103,18 +94,21 @@ async def loc_watcher(ctx):
             with os.scandir(ctx.ss2_dir_path) as entries:
                 for entry in entries:
                     if "pylocid" in entry.name:
-                        if entry.name == "pylocid2.txt":
-                            asyncio.create_task(ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]))
+                        first_seven = ""
+                        with open(entry, "r") as locfile:
+                            first_seven = locfile.read(7)
+                        if first_seven == "play_cd":
+                            if entry.name == "pylocid2.txt":
+                                asyncio.create_task(ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]))
+                            else:
+                                locid = int(entry.name.strip("pylocid.txt"))
+                                locs.append(locid)
+                                with open(ctx.sent_items_file, "a") as f:
+                                    f.write(str(locid) + ", ")
                             os.remove(entry.path)
-                            continue
-                        locid = int(entry.name.replace("pylocid","").replace(".txt", ""))
-                        locs.append(locid)
-                        with open(ctx.sent_items_file, "a") as f:
-                            f.write(str(locid) + ", ")
-                        os.remove(entry.path)
             if locs:
                 asyncio.create_task(ctx.send_msgs([{"cmd": "LocationChecks", "locations": locs}]))
-        await asyncio.sleep(2)
+        await asyncio.sleep(1)
 
 def launch(*args):
     async def main(args):
