@@ -67,7 +67,7 @@ class SS2Context(CommonContext):
 
             with open(self.sent_items_file, "w") as f:
                 f.write("0, ")
-                f.write(str(args["checked_locations"]).strip("[]") + ",")
+                f.write(str(args["checked_locations"]).strip("[]") + ", ")
 
             with open(self.settings_file, "w") as f:
                 f.write(str(self.seed) + ",")
