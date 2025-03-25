@@ -176,14 +176,6 @@ class SS2World(World):
         if self.options.include_stats_skills_psi:
             for i in range(1, 148):
                 cybmodshop = "Cyber module shop " + str(i)
-                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "2 Cyber Modules", self.player)
-                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "3 Cyber Modules", self.player)
-                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "4 Cyber Modules", self.player)
-                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "5 Cyber Modules", self.player)
-                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "6 Cyber Modules", self.player)
-                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "7 Cyber Modules", self.player)
-                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "8 Cyber Modules", self.player)
-                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "10 Cyber Modules", self.player)
                 forbid_item(self.multiworld.get_location(cybmodshop, self.player), "13 Cyber Modules", self.player)
                 forbid_item(self.multiworld.get_location(cybmodshop, self.player), "14 Cyber Modules", self.player)
                 forbid_item(self.multiworld.get_location(cybmodshop, self.player), "15 Cyber Modules", self.player)
