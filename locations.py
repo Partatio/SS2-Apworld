@@ -5927,7 +5927,7 @@ SS2locations: Dict[str, LocDict] = {
     "region": "shodan",
     "option": "",
     "reqitems": {}},
-"Cyber module shop": {"id": 1481,
+"Cyber module shop 1": {"id": 1481,
     "region": "Menu",
     "option": "StatsSkillsPsi",
     "reqitems": {"Cyber Modules": 6}},

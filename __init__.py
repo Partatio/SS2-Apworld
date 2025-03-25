@@ -3,7 +3,7 @@ from .options import SS2options
 from .items import SS2items, SS2item
 from .locations import SS2locations, SS2location
 from worlds.AutoWorld import World
-from worlds.generic.Rules import add_rule
+from worlds.generic.Rules import add_rule, forbid_item
 from BaseClasses import Region, Location, Entrance, Item, ItemClassification, CollectionState
 from worlds.LauncherComponents import components, Component, Type, launch_subprocess
 
@@ -172,6 +172,26 @@ class SS2World(World):
                             add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a) or 169 <= self.cyb_mod_count(state))
                     case _:
                         add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a))
+
+        if self.options.include_stats_skills_psi:
+            for i in range(1, 148):
+                cybmodshop = "Cyber module shop " + str(i)
+                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "2 Cyber Modules", self.player)
+                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "3 Cyber Modules", self.player)
+                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "4 Cyber Modules", self.player)
+                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "5 Cyber Modules", self.player)
+                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "6 Cyber Modules", self.player)
+                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "7 Cyber Modules", self.player)
+                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "8 Cyber Modules", self.player)
+                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "10 Cyber Modules", self.player)
+                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "13 Cyber Modules", self.player)
+                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "14 Cyber Modules", self.player)
+                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "15 Cyber Modules", self.player)
+                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "16 Cyber Modules", self.player)
+                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "20 Cyber Modules", self.player)
+                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "25 Cyber Modules", self.player)
+                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "30 Cyber Modules", self.player)
+                forbid_item(self.multiworld.get_location(cybmodshop, self.player), "Naturally Able OSUpgrade", self.player)
 
         menu_region.add_exits({"medsci1"})
         medsci1_region.add_exits({"medsci1sci"}, {"medsci1sci": lambda state: state.has("Science Access Card", self.player)})
