@@ -2,6 +2,7 @@ from typing import ClassVar, Dict, Any
 from .options import SS2options
 from .items import SS2items, SS2item
 from .locations import SS2locations, SS2location
+from .settings import SS2Settings
 from worlds.AutoWorld import World
 from worlds.generic.Rules import add_rule, forbid_item
 from BaseClasses import Region, Location, Entrance, Item, ItemClassification, CollectionState
@@ -20,6 +21,7 @@ class SS2World(World):
     game = "System Shock 2"  # name of the game/world
     options_dataclass = SS2options  # options the player can set
     options: SS2options
+    settings: SS2Settings
     topology_present = True  # show path to required location checks in spoiler
 
     item_name_to_id = {name: data["id"] for name, data in SS2items.items()}
