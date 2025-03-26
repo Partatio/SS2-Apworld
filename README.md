@@ -25,7 +25,7 @@ Start the System Shock 2 Client from the Archipelago Launcher and connect to the
 Start a new game and enjoy the horrors!
 
 ## Tips
-Keypads wont work unless you have the relevant audio log/email.  You can tell you have it if the correct code for the keypad appears when you hover over it.  The tutorial keypad is exempt.  Hackable keypads can be hacked but can not have their code put in.
+Keypads wont work unless you have the relevant audio log/email.  You can tell you have it if the correct code for the keypad appears when you hover over it.  The tutorial keypad is exempt.  Hackable keypads can be hacked but can not have their code put in.  The transmitter code cannot be input until you have found the 4 parts of the code in the art terminals.
 
 Locations on the map that seem to not be there are probably in enemies roaming around, or hidden above you.
 
