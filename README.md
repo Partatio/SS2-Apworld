@@ -1,5 +1,5 @@
 # System Shock 2 Archipelago AP world
-An AP world for System Shock 2.  Randomizes items, enemies, and replicators.  Optionally randomizes all Stats and psi abilities, and os upgrades.
+An AP world for System Shock 2.  Randomizes items, enemies, and replicators.  Optionally randomizes all Stats and psi abilities, and os upgrades.  Takes about 4-6 hours to complete a run.
 
 ## Requirements
 [Archipelago](https://archipelago.gg/tutorial/Archipelago/setup/en) v0.5.1 or higher.
