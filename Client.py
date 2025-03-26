@@ -2,7 +2,7 @@ import asyncio
 from tkinter import filedialog
 import os
 
-from .settings import SS2Settings
+import Utils
 from NetUtils import ClientStatus
 from CommonClient import ClientCommandProcessor, CommonContext, gui_enabled, logger, server_loop, get_base_parser
 
@@ -25,7 +25,8 @@ class SS2Context(CommonContext):
         self.seed = 0
         self.is_connected = False
 
-        self.ss2_dir_path = SS2Settings.ss2_path
+        options = Utils.get_options()
+        self.ss2_dir_path = options["ss2_options"]["ss2_path"]
         if not os.path.exists(self.ss2_dir_path):
             self.ss2_dir_path = filedialog.askdirectory(title="Select System Shock 2 installation folder")
         self.recieved_items_file = os.path.join(self.ss2_dir_path + "\\DMM\\Archipelago\\data\\ReceivedItems.txt")
