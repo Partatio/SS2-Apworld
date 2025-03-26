@@ -1422,7 +1422,7 @@ SS2locations: Dict[str, LocDict] = {
 "In niche on 2nd floor next to broken elevator in cargo bay 2a eng2": {"id": 354,
     "region": "eng2",
     "option": "",
-    "reqitems": {"Psi Wall": 1, "Cargo Bay 2A/2B Access Card": 1}},
+    "reqitems": {"Cargo Bay 2A/2B Access Card": 1}},
 "On broken elevator on 3rd floor in cargo bay 2a eng2": {"id": 355,
     "region": "eng2",
     "option": "",

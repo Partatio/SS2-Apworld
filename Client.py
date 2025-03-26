@@ -59,7 +59,7 @@ class SS2Context(CommonContext):
 
     def on_package(self, cmd: str, args: dict):
         if cmd in {"RoomInfo"}:
-            self.seed = args["seed_name"]
+            self.seed = str(args["seed_name"])[:6]
 
         if cmd in {"Connected"}:
             with open(self.recieved_items_file, "w") as f:
