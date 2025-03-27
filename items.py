@@ -85,7 +85,7 @@ SS2items: Dict[str, ItemDict] = {
     "count": 38,
     "option": ""},
 "Speed Booster": {"id": 20,
-    "classification": "progression",
+    "classification": "useful",
     "count": 17,
     "option": ""},
 "Standard Clip": {"id": 21,
