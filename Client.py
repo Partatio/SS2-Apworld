@@ -29,9 +29,9 @@ class SS2Context(CommonContext):
         self.ss2_dir_path = options["ss2_options"]["ss2_path"]
         if not os.path.exists(self.ss2_dir_path):
             self.ss2_dir_path = filedialog.askdirectory(title="Select System Shock 2 installation folder")
-        self.recieved_items_file = os.path.join(self.ss2_dir_path + "\\DMM\\Archipelago\\data\\ReceivedItems.txt")
-        self.sent_items_file = os.path.join(self.ss2_dir_path + "\\DMM\\Archipelago\\data\\SentItems.txt")
-        self.settings_file = os.path.join(self.ss2_dir_path + "\\DMM\\Archipelago\\data\\Settings.txt")
+        self.recieved_items_file = os.path.join(self.ss2_dir_path, "DMM", "Archipelago", "data", "ReceivedItems.txt")
+        self.sent_items_file = os.path.join(self.ss2_dir_path, "DMM", "Archipelago", "data", "SentItems.txt")
+        self.settings_file = os.path.join(self.ss2_dir_path, "DMM", "Archipelago", "data", "Settings.txt")
 
     async def server_auth(self, password_requested: bool = False):
         # This is called to autentificate with the server.
