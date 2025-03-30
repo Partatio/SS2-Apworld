@@ -1,6 +1,7 @@
 import asyncio
 from tkinter import filedialog
 import os
+import sys
 
 import Utils
 from NetUtils import ClientStatus
@@ -26,9 +27,11 @@ class SS2Context(CommonContext):
         self.is_connected = False
 
         options = Utils.get_options()
-        self.ss2_dir_path = options["ss2_options"]["ss2_path"]
+        self.ss2_dir_path = os.path.join(options["ss2_options"]["ss2_path"])
         if not os.path.exists(self.ss2_dir_path):
-            self.ss2_dir_path = filedialog.askdirectory(title="Select System Shock 2 installation folder")
+            print_error_and_close("Couldn't find your SS2 installation.")
+        if not os.path.exists(os.path.join(self.ss2_dir_path, "DMM", "Archipelago", "data")):
+            print_error_and_close("Couldn't find mod, install the SS2 mod before running the client.")
         self.recieved_items_file = os.path.join(self.ss2_dir_path, "DMM", "Archipelago", "data", "ReceivedItems.txt")
         self.sent_items_file = os.path.join(self.ss2_dir_path, "DMM", "Archipelago", "data", "SentItems.txt")
         self.settings_file = os.path.join(self.ss2_dir_path, "DMM", "Archipelago", "data", "Settings.txt")
@@ -85,6 +88,12 @@ class SS2Context(CommonContext):
         ui = super().make_gui()
         ui.base_title = "Archipelago System Shock 2 Client"
         return ui
+
+
+def print_error_and_close(msg):
+    logger.error("Error: " + msg)
+    Utils.messagebox("Error", msg, error=True)
+    sys.exit(1)
 
 async def loc_watcher(ctx):
     while not ctx.exit_event.is_set():

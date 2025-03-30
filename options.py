@@ -10,6 +10,9 @@ class IncludeOSUpgrades(DefaultOnToggle):
     """Include OSUpgrades."""
     display_name = "Include OSUpgrades"
 
+class IncludeChemicals(Toggle):
+    """Include chemicals and manifests."""
+    display_name = "Include chemicals"
 class IncludeStartingWrench(Toggle):
     """Include the wrench found on the first body in medsci."""
     display_name = "Include starting wrench"
@@ -25,6 +28,7 @@ class SS2StartHints(StartHints):
 class SS2options(PerGameCommonOptions):
     include_stats_skills_psi: IncludeStatsSkillsPsi
     include_os_upgrades: IncludeOSUpgrades
+    include_chemicals: IncludeChemicals
     include_starting_wrench: IncludeStartingWrench
     many_is_victory: ManyIsVictory
     start_hints: SS2StartHints

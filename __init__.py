@@ -40,6 +40,10 @@ class SS2World(World):
     def has_functional_weapon(self, state: CollectionState):
         p = self.player
         cybmodamount = self.cyb_mod_count(state)
+        if self.options.include_chemicals:
+            req_yttrium = state.has("Yttrium", p)
+        else:
+            req_yttrium = True
         functional_weapon = (((state.has_group("Pistols", p) or (state.has("Broken Pistol", p) and self.upgrade_or_cybmod(state, "Repair Upgrade", 1, 17, cybmodamount))) and self.upgrade_or_cybmod(state, "Conventional weapon Upgrade", 1, 21, cybmodamount) and state.has("Standard Clip", p, 4)) or
                              
                             ((state.has_group("Shotguns", p) or (state.has("Broken Shotgun", p) and self.upgrade_or_cybmod(state, "Repair Upgrade", 3, 39, cybmodamount))) and self.upgrade_or_cybmod(state, "Conventional weapon Upgrade", 3, 45, cybmodamount) and state.has("6 Rifled Slugs", p, 4)) or
@@ -54,7 +58,7 @@ class SS2World(World):
 
                             ((state.has("Damaged Fusion Cannon", p) or (state.has("Broken Fusion Cannon", p) and self.upgrade_or_cybmod(state, "Repair Upgrade", 4, 60, cybmodamount))) and self.upgrade_or_cybmod(state, "Heavy weapon Upgrade", 6, 322, cybmodamount) and self.upgrade_or_cybmod(state, "Strength Upgrade", 4, 322, cybmodamount) and state.has("20 Prisms", p, 3)) or
 
-                            (state.has("Crystal Shard", p) and self.upgrade_or_cybmod(state, "Annelid weapon Upgrade", 1, 60, cybmodamount) and (self.upgrade_or_cybmod(state, "Research Upgrade", 4, 81, cybmodamount) or (self.upgrade_or_cybmod(state, "Research Upgrade", 3, 60, cybmodamount) and state.has("LabAssistant(TM) Implant", p))) and state.has("Yttrium", p)) or
+                            (state.has("Crystal Shard", p) and self.upgrade_or_cybmod(state, "Annelid weapon Upgrade", 1, 60, cybmodamount) and (self.upgrade_or_cybmod(state, "Research Upgrade", 4, 81, cybmodamount) or (self.upgrade_or_cybmod(state, "Research Upgrade", 3, 60, cybmodamount) and state.has("LabAssistant(TM) Implant", p))) and req_yttrium) or
     
                             (state.has("Black-Ops Psionic Amplifier", p) and self.upgrade_or_cybmod(state, "Psi Upgrade", 2, 41, cybmodamount) and ((self.upgrade_or_cybmod(state, "Projected Cryokinesis Psi Ability", 1, 41, cybmodamount) and self.upgrade_or_cybmod(state, "First Tier Neural Capacity Psi Ability", 1, 41, cybmodamount)) or 
                             (state.has("Localized Pyrokinesis Psi Ability", p) and state.has("Second Tier Neural Capacity Psi Ability", p)) or
@@ -69,6 +73,9 @@ class SS2World(World):
 
         if self.options.include_os_upgrades:
             curoptions += "OSUpgrades,"
+        
+        if self.options.include_chemicals:
+            curoptions += "Chemicals,"
 
         if self.options.include_starting_wrench:
             curoptions += "StartingWrench,"
@@ -160,6 +167,9 @@ class SS2World(World):
                             add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a) or (state.has("Black-Ops Psionic Amplifier", self.player) and state.has("Metacreative Barrier Psi Ability", self.player) and state.has("Fifth Tier Neural Capacity Psi Ability", self.player)))
                         else:
                             add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a) or 169 <= self.cyb_mod_count(state))
+                    case "Antimony" | "Vanadium":
+                        if self.options.include_chemicals:
+                            add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a))
                     case _:
                         add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a))
 
@@ -183,14 +193,20 @@ class SS2World(World):
                                                                                         "eng1": lambda state: state.has("WATTS Re: Maintenance conduit Audio Log", self.player) and self.has_functional_weapon(state)})
         medsci2crew_region.add_exits({"medsci2med"}, {"medsci2med": lambda state: state.has("Deck 2 crew Access Card", self.player)})
         eng1_region.add_exits({"eng2", "hydro2"}, {"hydro2": lambda state: state.has("45m/dEx circuit board", self.player) and state.has("SANGER Re: Locked in Audio Log", self.player)})
-        hydro2_region.add_exits({"hydro1", "hydro3", "ops2"}, {"hydro1": lambda state: state.has("Hydroponics A Access Card", self.player), 
-                                                               "hydro3": lambda state: state.has("Hydroponics D Access Card", self.player),
-                                                               "ops2": lambda state: state.has("Toxin-A", self.player, 4) and state.has("Vanadium", self.player) and state.has("Antimony", self.player, 2)
-                                                               and (self.upgrade_or_cybmod(state, "Research Upgrade", 1, 17, self.cyb_mod_count(state)) or state.has("LabAssistant(TM) Implant", self.player)) and state.has("Hydroponics A Access Card", self.player) and state.has("Hydroponics D Access Card", self.player)})
+        if self.options.include_chemicals:
+            hydro2_region.add_exits({"ops2"}, {"ops2": lambda state: state.has("Toxin-A", self.player, 4) and state.has("Vanadium", self.player) and state.has("Antimony", self.player, 2)
+                                                                     and (self.upgrade_or_cybmod(state, "Research Upgrade", 1, 17, self.cyb_mod_count(state)) or state.has("LabAssistant(TM) Implant", self.player)) 
+                                                                     and state.has("Hydroponics A Access Card", self.player) and state.has("Hydroponics D Access Card", self.player)})
+        else:
+            hydro2_region.add_exits({"ops2"}, {"ops2": lambda state: state.has("Toxin-A", self.player, 4) and (self.upgrade_or_cybmod(state, "Research Upgrade", 1, 17, self.cyb_mod_count(state)) or state.has("LabAssistant(TM) Implant", self.player))
+                                                                     and state.has("Hydroponics A Access Card", self.player) and state.has("Hydroponics D Access Card", self.player)})
+        hydro2_region.add_exits({"hydro1", "hydro3"}, {"hydro1": lambda state: state.has("Hydroponics A Access Card", self.player), 
+                                                               "hydro3": lambda state: state.has("Hydroponics D Access Card", self.player)})
         ops2_region.add_exits({"rec1", "ops1", "ops3", "ops4"})
         rec1_region.add_exits({"command1", "rec2", "rec3"}, {"command1": lambda state: state.has("Quantum Simulation Chip", self.player) and state.has("Linear Simulation Chip", self.player) and state.has("Interpolated Simulation Chip", self.player) and state.has("Security Access Card", self.player)
                                                              and (state.has("Deck 5 Crew Access Card", self.player) or (state.has("Black-Ops Psionic Amplifier", self.player) and self.upgrade_or_cybmod(state, "Metacreative Barrier Psi Ability", 1, 169, self.cyb_mod_count(state)) and self.upgrade_or_cybmod(state, "Fifth Tier Neural Capacity Psi Ability", 1, 169, self.cyb_mod_count(state)))) and state.has("Dead Power Cell", self.player, 2) and state.has("Athletics Access Card", self.player)})
-        command1_region.add_exits({"command2", "rick1"}, {"rick1": lambda state: state.has("Ops Override Access Card", self.player) and state.has("Shuttle Bay Access Card", self.player) and state.has("Sympathetic Resonator", self.player) and state.has("Bridge Access Card", self.player)})
+        command1_region.add_exits({"command2", "rick1"}, {"rick1": lambda state: state.has("Ops Override Access Card", self.player) and state.has("Shuttle Bay Access Card", self.player)
+                                                          and state.has("Sympathetic Resonator", self.player) and state.has("Bridge Access Card", self.player)})
         rick1_region.add_exits({"rick2"}, {"rick2": lambda state: state.has("Rickenbacker Access Card", self.player)})
         rick2_region.add_exits({"rick3"})
         rick3_region.add_exits({"many"})
@@ -233,11 +249,11 @@ class SS2World(World):
         if self.options.include_os_upgrades:
             curoptions += "OSUpgrades,"
 
+        if self.options.include_chemicals:
+            curoptions += "Chemicals,"
+
         if self.options.include_starting_wrench:
             curoptions += "StartingWrench,"
-
-        if self.options.many_is_victory:
-            curoptions += "ManyIsVictory"
 
         for item, data in SS2items.items():
             if data["option"] not in curoptions:
@@ -253,19 +269,22 @@ class SS2World(World):
     def fill_slot_data(self) -> Dict[str, Any]:
         curoptions = ""
 
+        if self.options.include_stats_skills_psi:
+            curoptions += "StatsSkillsPsi,"
+        else:
+            curoptions+= "Respec,"
+
         if self.options.include_os_upgrades:
             curoptions += "OSUpgrades,"
+
+        if self.options.include_chemicals:
+            curoptions += "Chemicals,"
 
         if self.options.include_starting_wrench:
             curoptions += "StartingWrench,"
 
         if self.options.many_is_victory:
             curoptions += "ManyIsVictory"
-
-        if self.options.include_stats_skills_psi:
-            curoptions += "StatsSkillsPsi,"
-        else:
-            curoptions+= "Respec"
 
         return {"options": curoptions}
     
