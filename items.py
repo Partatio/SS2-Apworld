@@ -466,7 +466,7 @@ SS2items: Dict[str, ItemDict] = {
     "option": ""},
 "Annelid Healing Gland": {"id": 115,
     "classification": "useful",
-    "count": 2,
+    "count": 3,
     "option": ""},
 "Security Access Card": {"id": 116,
     "classification": "progression",

@@ -6518,5 +6518,9 @@ SS2locations: Dict[str, LocDict] = {
 "On raised area above lots of water in biological survery hydro2": {"id": 1628,
     "region": "hydro2",
     "option": "",
-    "reqitems": {}}
+    "reqitems": {}},
+"On med bed in security office after engineering control grav shaft eng1": {"id": 1629,
+    "region": "eng1",
+    "option": "",
+    "reqitems": {}},
 }
