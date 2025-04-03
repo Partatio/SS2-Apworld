@@ -116,7 +116,7 @@ async def loc_watcher(ctx):
                             os.remove(entry.path)
             if locs:
                 asyncio.create_task(ctx.send_msgs([{"cmd": "LocationChecks", "locations": locs}]))
-        await asyncio.sleep(1)
+        await asyncio.sleep(0.5)
 
 def launch(*args):
     async def main(args):
