@@ -10,6 +10,10 @@ class IncludeOSUpgrades(DefaultOnToggle):
     """Include OSUpgrades."""
     display_name = "Include OSUpgrades"
 
+class RemoveDuplicateLocations(Toggle):
+    """Drastically reduces the amount of locations by removing extra locations with the same name and locations close together.
+    Does not affect chemicals if that option is on.  Compresses items, for example hypos only come in 3 packs."""
+    display_name = "Remove duplicate locations"
 class IncludeChemicals(Toggle):
     """Include chemicals and manifests."""
     display_name = "Include chemicals"
@@ -28,6 +32,7 @@ class SS2StartHints(StartHints):
 class SS2options(PerGameCommonOptions):
     include_stats_skills_psi: IncludeStatsSkillsPsi
     include_os_upgrades: IncludeOSUpgrades
+    remove_duplicate_locations: RemoveDuplicateLocations
     include_chemicals: IncludeChemicals
     include_starting_wrench: IncludeStartingWrench
     many_is_victory: ManyIsVictory

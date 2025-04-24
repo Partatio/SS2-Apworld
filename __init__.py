@@ -60,7 +60,8 @@ class SS2World(World):
 
                             (state.has("Crystal Shard", p) and self.upgrade_or_cybmod(state, "Annelid weapon Upgrade", 1, 60, cybmodamount) and (self.upgrade_or_cybmod(state, "Research Upgrade", 4, 81, cybmodamount) or (self.upgrade_or_cybmod(state, "Research Upgrade", 3, 60, cybmodamount) and state.has("LabAssistant(TM) Implant", p))) and req_yttrium) or
     
-                            (state.has("Black-Ops Psionic Amplifier", p) and self.upgrade_or_cybmod(state, "Psi Upgrade", 2, 41, cybmodamount) and ((self.upgrade_or_cybmod(state, "Projected Cryokinesis Psi Ability", 1, 41, cybmodamount) and self.upgrade_or_cybmod(state, "First Tier Neural Capacity Psi Ability", 1, 41, cybmodamount)) or 
+                            (state.has("Black-Ops Psionic Amplifier", p) and self.upgrade_or_cybmod(state, "Psi Upgrade", 2, 41, cybmodamount) and
+                            ((self.upgrade_or_cybmod(state, "Projected Cryokinesis Psi Ability", 1, 41, cybmodamount) and self.upgrade_or_cybmod(state, "First Tier Neural Capacity Psi Ability", 1, 41, cybmodamount)) or 
                             (state.has("Localized Pyrokinesis Psi Ability", p) and state.has("Second Tier Neural Capacity Psi Ability", p)) or
                             (state.has("Projected Pyrokinesis Psi Ability", p) and state.has("Third Tier Neural Capacity Psi Ability", p)) or
                             (state.has("Cerebro-Energetic Extension Psi Ability", p) and state.has("Fourth Tier Neural Capacity Psi Ability", p)))))
@@ -73,6 +74,11 @@ class SS2World(World):
 
         if self.options.include_os_upgrades:
             curoptions += "OSUpgrades,"
+
+        if self.options.remove_duplicate_locations:
+            curoptions += "RemoveDuplicates,"
+        else:
+            curoptions += "KeepDuplicates,"
         
         if self.options.include_chemicals:
             curoptions += "Chemicals,"
@@ -221,7 +227,7 @@ class SS2World(World):
         VictoryLoc.place_locked_item(SS2item("Victory", ItemClassification.progression, None, self.player))
         self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player)
 
-        visualize_regions(self.multiworld.get_region("Menu", self.player), "my_world.puml")
+        #visualize_regions(self.multiworld.get_region("Menu", self.player), "my_world.puml")
 
         
             
@@ -248,6 +254,11 @@ class SS2World(World):
 
         if self.options.include_os_upgrades:
             curoptions += "OSUpgrades,"
+
+        if self.options.remove_duplicate_locations:
+            curoptions += "RemoveDuplicates,"
+        else:
+            curoptions += "KeepDuplicates,"
 
         if self.options.include_chemicals:
             curoptions += "Chemicals,"
@@ -276,6 +287,11 @@ class SS2World(World):
 
         if self.options.include_os_upgrades:
             curoptions += "OSUpgrades,"
+
+        if self.options.remove_duplicate_locations:
+            curoptions += "RemoveDuplicates,"
+        else:
+            curoptions += "KeepDuplicates,"
 
         if self.options.include_chemicals:
             curoptions += "Chemicals,"
