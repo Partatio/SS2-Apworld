@@ -14,9 +14,11 @@ class RemoveDuplicateLocations(Toggle):
     """Drastically reduces the amount of locations by removing extra locations with the same name and locations close together.
     Does not affect chemicals if that option is on.  Compresses items, for example hypos only come in 3 packs."""
     display_name = "Remove duplicate locations"
+
 class IncludeChemicals(Toggle):
     """Include chemicals and manifests."""
     display_name = "Include chemicals"
+    
 class IncludeStartingWrench(Toggle):
     """Include the wrench found on the first body in medsci."""
     display_name = "Include starting wrench"
