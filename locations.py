@@ -6523,5 +6523,4 @@ SS2locations: Dict[str, LocDict] = {
     "region": "eng1",
     "option": "",
     "reqitems": {"Security Access Card": 1}},
-    "reqitems": {}},
 }
