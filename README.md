@@ -4,11 +4,11 @@ An AP world for System Shock 2.  Randomizes items, enemies, and replicators.  Op
 ## Requirements
 [Archipelago](https://archipelago.gg/tutorial/Archipelago/setup/en) v0.5.1 or higher.
 
-The latest [release](https://github.com/Partatio/SS2Archipelago/releases) of the AP world, both the player and the person generating the world need this.
+The latest [release](https://github.com/Partatio/SS2-Apworld/releases) of the AP world, both the player and the person generating the world need this.
 
 System Shock 2 with [SS2Tool](https://www.systemshock.org/index.php?topic=4141.0) and [SCP beta7](https://www.systemshock.org/index.php?topic=7116.0) installed.
 
-The latest [release](https://github.com/Partatio/SS2Archipelago/releases) of the Archipelago System Shock 2 mod.
+The latest [release](https://github.com/Partatio/SS2-Apworld/releases) of the Archipelago System Shock 2 mod, it is the .7z file.
 
 ## Installation
 Install the AP world by opening it with Archipelago, or using Install APWorld in the Archipelago Launcher, or by manually placing it in Archipelago/custom_worlds.
