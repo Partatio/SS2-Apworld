@@ -77,7 +77,6 @@ class SS2World(World):
             curoptions += "ManyIsVictory"
 
 
-
         menu_region = Region("Menu", self.player, self.multiworld)
         self.multiworld.regions.append(menu_region)
         medsci1_region = Region("medsci1", self.player, self.multiworld)
@@ -253,7 +252,13 @@ class SS2World(World):
         if self.options.include_starting_wrench:
             curoptions += "StartingWrench,"
 
-        for item, data in SS2items.items():
+        SS2itemlist = SS2items
+
+        if "Science Access Card" in self.options.start_inventory:
+            SS2itemlist["Science Access Card"]["count"] -= 1
+            SS2itemlist["15 Nanites"]["count"] += 1
+
+        for item, data in SS2itemlist.items():
             if data["option"] not in curoptions:
                 continue
             amount = data["count"]
