@@ -1,5 +1,5 @@
 import typing
-from Options import DefaultOnToggle, PerGameCommonOptions, Toggle, StartHints
+from Options import DefaultOnToggle, PerGameCommonOptions, Toggle, StartInventory
 from dataclasses import dataclass
 
 class IncludeStatsSkillsPsi(DefaultOnToggle):                                                                
@@ -27,8 +27,8 @@ class ManyIsVictory(Toggle):
     """Make The Many the victory condition instead of Shodan."""
     display_name = "The Many is victory condition."
 
-class SS2StartHints(StartHints):
-    default = ["Science Access Card"]
+class SS2StartInventory(StartInventory):
+    default = {"Science Access Card": 1}
 
 @dataclass
 class SS2options(PerGameCommonOptions):
@@ -38,4 +38,4 @@ class SS2options(PerGameCommonOptions):
     include_chemicals: IncludeChemicals
     include_starting_wrench: IncludeStartingWrench
     many_is_victory: ManyIsVictory
-    start_hints: SS2StartHints
+    start_inventory: SS2StartInventory

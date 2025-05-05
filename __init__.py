@@ -28,7 +28,6 @@ class SS2World(World):
     location_name_to_id = {name: data["id"] for name, data in SS2locations.items()}
     item_name_groups = {"Pistols": {"Pistol", "Damaged Pistol"},
                         "Shotguns": {"Shotgun", "Damaged Shotgun"},
-                        "Assault Rifles": {"Assault Rifle", "Damaged Assault Rifle"},
                         "Laser Pistols": {"Laser Pistol", "Damaged Laser Pistol"},
                         }
 
@@ -40,25 +39,13 @@ class SS2World(World):
     def has_functional_weapon(self, state: CollectionState):
         p = self.player
         cybmodamount = self.cyb_mod_count(state)
-        if self.options.include_chemicals:
-            req_yttrium = state.has("Yttrium", p)
-        else:
-            req_yttrium = True
         functional_weapon = (((state.has_group("Pistols", p) or (state.has("Broken Pistol", p) and self.upgrade_or_cybmod(state, "Repair Upgrade", 1, 17, cybmodamount))) and self.upgrade_or_cybmod(state, "Conventional weapon Upgrade", 1, 21, cybmodamount) and state.has("Standard Clip", p, 4)) or
                              
                             ((state.has_group("Shotguns", p) or (state.has("Broken Shotgun", p) and self.upgrade_or_cybmod(state, "Repair Upgrade", 3, 39, cybmodamount))) and self.upgrade_or_cybmod(state, "Conventional weapon Upgrade", 3, 45, cybmodamount) and state.has("6 Rifled Slugs", p, 4)) or
 
-                            ((state.has_group("Assault Rifles", p) or (state.has("Broken Assault Rifle", p) and self.upgrade_or_cybmod(state, "Repair Upgrade", 4, 60, cybmodamount))) and self.upgrade_or_cybmod(state, "Conventional weapon Upgrade", 6, 243, cybmodamount) and self.upgrade_or_cybmod(state, "Strength Upgrade", 2, 243, cybmodamount) and state.has("Standard Clip", p, 4)) or #upgrade_or_cybmod has combined cybmod costs for requirements because you need all of the requirements to use the weapon.
-
                             ((state.has_group("Laser Pistols", p) or (state.has("Broken Laser Pistol", p) and self.upgrade_or_cybmod(state, "Repair Upgrade", 1, 17, cybmodamount))) and self.upgrade_or_cybmod(state, "Energy weapon Upgrade", 1, 21, cybmodamount)) or
 
-                            (state.has("Laser Rapier", p) and self.upgrade_or_cybmod(state, "Energy weapon Upgrade", 4, 90, cybmodamount) and self.upgrade_or_cybmod(state, "Agility Upgrade", 2, 90, cybmodamount)) or
-
                             ((state.has("Grenade Launcher", p) or (state.has("Broken Grenade Launcher", p) and self.upgrade_or_cybmod(state, "Repair Upgrade", 2, 25, cybmodamount))) and self.upgrade_or_cybmod(state, "Heavy weapon Upgrade", 1, 21, cybmodamount) and state.has("3 Fragmentation Grenades", p, 5)) or
-
-                            ((state.has("Damaged Fusion Cannon", p) or (state.has("Broken Fusion Cannon", p) and self.upgrade_or_cybmod(state, "Repair Upgrade", 4, 60, cybmodamount))) and self.upgrade_or_cybmod(state, "Heavy weapon Upgrade", 6, 322, cybmodamount) and self.upgrade_or_cybmod(state, "Strength Upgrade", 4, 322, cybmodamount) and state.has("20 Prisms", p, 3)) or
-
-                            (state.has("Crystal Shard", p) and self.upgrade_or_cybmod(state, "Annelid weapon Upgrade", 1, 60, cybmodamount) and (self.upgrade_or_cybmod(state, "Research Upgrade", 4, 81, cybmodamount) or (self.upgrade_or_cybmod(state, "Research Upgrade", 3, 60, cybmodamount) and state.has("LabAssistant(TM) Implant", p))) and req_yttrium) or
     
                             (state.has("Black-Ops Psionic Amplifier", p) and self.upgrade_or_cybmod(state, "Psi Upgrade", 2, 41, cybmodamount) and
                             ((self.upgrade_or_cybmod(state, "Projected Cryokinesis Psi Ability", 1, 41, cybmodamount) and self.upgrade_or_cybmod(state, "First Tier Neural Capacity Psi Ability", 1, 41, cybmodamount)) or 
