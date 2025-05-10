@@ -47,7 +47,7 @@ class SS2World(World):
 
                             ((state.has("Grenade Launcher", p) or (state.has("Broken Grenade Launcher", p) and self.upgrade_or_cybmod(state, "Repair Upgrade", 2, 25, cybmodamount))) and self.upgrade_or_cybmod(state, "Heavy weapon Upgrade", 1, 21, cybmodamount) and state.has("3 Fragmentation Grenades", p, 5)) or
     
-                            (state.has("Black-Ops Psionic Amplifier", p) and self.upgrade_or_cybmod(state, "Psi Upgrade", 2, 41, cybmodamount) and
+                            (state.has("Psi Amp", p) and self.upgrade_or_cybmod(state, "Psi Upgrade", 2, 41, cybmodamount) and
                             ((self.upgrade_or_cybmod(state, "Projected Cryokinesis Psi Ability", 1, 41, cybmodamount) and self.upgrade_or_cybmod(state, "First Tier Neural Capacity Psi Ability", 1, 41, cybmodamount)) or 
                             (state.has("Localized Pyrokinesis Psi Ability", p) and state.has("Second Tier Neural Capacity Psi Ability", p)) or
                             (state.has("Projected Pyrokinesis Psi Ability", p) and state.has("Third Tier Neural Capacity Psi Ability", p)) or
@@ -138,13 +138,13 @@ class SS2World(World):
             for reqitem, amount in data["reqitems"].items():
                 match reqitem:
                     case "Psi Wall":
-                        add_rule(loc, lambda state: state.has("Black-Ops Psionic Amplifier", self.player) and self.upgrade_or_cybmod(state, "Metacreative Barrier Psi Ability", 1, 169, curcba := self.cyb_mod_count(state)) and self.upgrade_or_cybmod(state, "Fifth Tier Neural Capacity Psi Ability", 1, 169, curcba))
+                        add_rule(loc, lambda state: state.has("Psi Amp", self.player) and self.upgrade_or_cybmod(state, "Metacreative Barrier Psi Ability", 1, 169, curcba := self.cyb_mod_count(state)) and self.upgrade_or_cybmod(state, "Fifth Tier Neural Capacity Psi Ability", 1, 169, curcba))
                     case "Cyber Modules":
                         add_rule(loc, lambda state, a = amount: a <= self.cyb_mod_count(state))
                     case "Hacking Upgrade":
                         if self.options.include_stats_skills_psi:
                             add_rule(loc, lambda state, ri = reqitem, a = amount[0]: (state.has(ri, self.player, a) and state.has("Cybernetic Affinity Upgrade", self.player, (a // 2))) or 
-                                    (state.has("Psi Upgrade", self.player, (a*2)-2) and state.has("Black-Ops Psionic Amplifier", self.player) and state.has("Remote Circuitry Manipulation Psi Ability", self.player) and state.has("Fourth Tier Neural Capacity Psi Ability", self.player)))
+                                    (state.has("Psi Upgrade", self.player, (a*2)-2) and state.has("Psi Amp", self.player) and state.has("Remote Circuitry Manipulation Psi Ability", self.player) and state.has("Fourth Tier Neural Capacity Psi Ability", self.player)))
                         else:
                             add_rule(loc, lambda state, ri = reqitem, a = amount[0], cba = amount[1]: self.upgrade_or_cybmod(state, ri, a, cba, self.cyb_mod_count(state)))
                     case "Research Upgrade":
@@ -156,7 +156,7 @@ class SS2World(World):
                         add_rule(loc, lambda state, ri = reqitem, a = amount[0], cba = amount[1]: self.upgrade_or_cybmod(state, ri, a, cba, self.cyb_mod_count(state)))
                     case "Deck 5 Crew Access Card":
                         if self.options.include_stats_skills_psi:
-                            add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a) or (state.has("Black-Ops Psionic Amplifier", self.player) and state.has("Metacreative Barrier Psi Ability", self.player) and state.has("Fifth Tier Neural Capacity Psi Ability", self.player)))
+                            add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a) or (state.has("Psi Amp", self.player) and state.has("Metacreative Barrier Psi Ability", self.player) and state.has("Fifth Tier Neural Capacity Psi Ability", self.player)))
                         else:
                             add_rule(loc, lambda state, ri = reqitem, a = amount: state.has(ri, self.player, a) or 169 <= self.cyb_mod_count(state))
                     case "Antimony" | "Vanadium":
@@ -182,9 +182,9 @@ class SS2World(World):
         medsci1sci_region.add_exits({"medsci1rd", "medsci2med", "medsci2crew", "eng1"}, {"medsci1rd": lambda state: state.has("R & D Access Card", self.player),
                                                                                         "medsci2med": lambda state: state.has("Dead Power Cell", self.player, 2) and self.has_functional_weapon(state), 
                                                                                         "medsci2crew": lambda state: state.has("Deck 2 crew Access Card", self.player) and self.has_functional_weapon(state), 
-                                                                                        "eng1": lambda state: state.has("WATTS Re: Maintenance conduit Audio Log", self.player) and self.has_functional_weapon(state)})
+                                                                                        "eng1": lambda state: state.has("Maintenance conduit Access AL", self.player) and self.has_functional_weapon(state)})
         medsci2crew_region.add_exits({"medsci2med"}, {"medsci2med": lambda state: state.has("Deck 2 crew Access Card", self.player)})
-        eng1_region.add_exits({"eng2", "hydro2"}, {"hydro2": lambda state: state.has("45m/dEx circuit board", self.player) and state.has("SANGER Re: Locked in Audio Log", self.player)})
+        eng1_region.add_exits({"eng2", "hydro2"}, {"hydro2": lambda state: state.has("45m/dEx circuit board", self.player) and state.has("Fluidics Control Access AL", self.player)})
         if self.options.include_chemicals:
             hydro2_region.add_exits({"ops2"}, {"ops2": lambda state: state.has("Toxin-A", self.player, 4) and state.has("Vanadium", self.player) and state.has("Antimony", self.player, 2)
                                                                      and (self.upgrade_or_cybmod(state, "Research Upgrade", 1, 17, self.cyb_mod_count(state)) or state.has("LabAssistant(TM) Implant", self.player)) 
@@ -196,7 +196,7 @@ class SS2World(World):
                                                                "hydro3": lambda state: state.has("Hydroponics D Access Card", self.player)})
         ops2_region.add_exits({"rec1", "ops1", "ops3", "ops4"})
         rec1_region.add_exits({"command1", "rec2", "rec3"}, {"command1": lambda state: state.has("Quantum Simulation Chip", self.player) and state.has("Linear Simulation Chip", self.player) and state.has("Interpolated Simulation Chip", self.player) and state.has("Security Access Card", self.player)
-                                                             and (state.has("Deck 5 Crew Access Card", self.player) or (state.has("Black-Ops Psionic Amplifier", self.player) and self.upgrade_or_cybmod(state, "Metacreative Barrier Psi Ability", 1, 169, self.cyb_mod_count(state)) and self.upgrade_or_cybmod(state, "Fifth Tier Neural Capacity Psi Ability", 1, 169, self.cyb_mod_count(state)))) and state.has("Dead Power Cell", self.player, 2) and state.has("Athletics Access Card", self.player)})
+                                                             and (state.has("Deck 5 Crew Access Card", self.player) or (state.has("Psi Amp", self.player) and self.upgrade_or_cybmod(state, "Metacreative Barrier Psi Ability", 1, 169, self.cyb_mod_count(state)) and self.upgrade_or_cybmod(state, "Fifth Tier Neural Capacity Psi Ability", 1, 169, self.cyb_mod_count(state)))) and state.has("Dead Power Cell", self.player, 2) and state.has("Athletics Access Card", self.player)})
         command1_region.add_exits({"command2", "rick1"}, {"rick1": lambda state: state.has("Ops Override Access Card", self.player) and state.has("Shuttle Bay Access Card", self.player)
                                                           and state.has("Sympathetic Resonator", self.player) and state.has("Bridge Access Card", self.player)})
         rick1_region.add_exits({"rick2"}, {"rick2": lambda state: state.has("Rickenbacker Access Card", self.player)})
@@ -253,6 +253,93 @@ class SS2World(World):
             curoptions += "StartingWrench,"
 
         SS2itemlist = SS2items
+
+        if self.options.remove_duplicate_locations: #303 already removed
+            SS2itemlist["Wrench"]["count"] -= 12 #leaves 2 wrench and 1 starting wrench
+            SS2itemlist["pistol"]["count"] -= 4 #leaves 1
+            SS2itemlist["Damaged Pistol"]["count"] -= 17 #leaves 1
+            SS2itemlist["Broken Pistol"]["count"] -= 9 #leaves 1
+            SS2itemlist["Shotgun"]["count"] -= 1 #leaves 1
+            SS2itemlist["Damaged Shotgun"]["count"] -= 7 #leaves 1
+            SS2itemlist["Broken Shotgun"]["count"] -= 5 #leaves 1
+            SS2itemlist["Laser Pistol"]["count"] -= 3 #leaves 1
+            SS2itemlist["Damaged Laser Pistol"]["count"] -= 1 #leaves 1
+            #SS2itemlist["Broken Laser Pistol"]["count"] -= 0 #leaves 1
+            #SS2itemlist["Grenade Launcher"]["count"] -= 0 #leaves 2
+            SS2itemlist["Broken Grenade Launcher"]["count"] -= 2 #leaves 1
+            SS2itemlist["Psi Amp"]["count"] -= 4 #leaves 3
+            SS2itemlist["Assault Rifle"]["count"] -= 1 #leaves 1
+            SS2itemlist["Damaged Assault Rifle"]["count"] -= 1 #leaves 1
+            SS2itemlist["Broken Assault Rifle"]["count"] -= 1 #leaves 1
+            #SS2itemlist["Broken Stasis Field Generator"]["count"] -= 0 #leaves 2
+            #SS2itemlist["Damaged Stasis Field Generator"]["count"] -= 0 #leaves 1
+            SS2itemlist["Laser Rapier"]["count"] -= 2 #leaves 3
+            SS2itemlist["EMP Rifle"]["count"] -= 3 #leaves 1
+            SS2itemlist["Damaged EMP Rifle"]["count"] -= 1 #leaves 1
+            SS2itemlist["Broken EMP Rifle"]["count"] -= 1 #leaves 1
+            SS2itemlist["Crystal Shard"]["count"] -= 14 #leaves 3
+            SS2itemlist["Damaged Fusion Cannon"]["count"] -= 1 #leaves 2
+            #SS2itemlist["Broken Fusion Cannon"]["count"] -= 0 #leaves 1
+            #SS2itemlist["Annelid Launcher"]["count"] -= 0 leaves 3
+            
+            SS2itemlist["Small Standard Clip"]["count"] -= 58 #leaves 0
+            SS2itemlist["Standard Clip"]["count"] += 29 #leaves 65
+            SS2itemlist["Small AP Clip"]["count"] -= 12 #leaves 1
+            SS2itemlist["AP Clip"]["count"] += 6 #leaves 11
+            SS2itemlist["Box of 6 Anti-personnel Bullets"]["count"] -= 8 #leaves 0
+            SS2itemlist["Box of 12 Anti-Personnel Bullets"]["count"] += 4 #leaves 12
+            SS2itemlist["10 Prisms"]["count"] -= 10 #leaves 1
+            SS2itemlist["20 Prisms"]["count"] += 5 #leaves 15
+
+            SS2itemlist["Suit of Light Combat Armor"]["count"] -= 4 #leaves 1
+            SS2itemlist["Suit of Standard-Issue Combat Armor"]["count"] -= 3 #leaves 1
+            SS2itemlist["Suit of Powered Armor"]["count"] -= 1 #leaves 1
+            SS2itemlist["Suit of Worm Skin Armor"]["count"] -= 4 #leaves 1
+            SS2itemlist["Suit of Heavy Combat Armor"]["count"] -= 4 #leaves 1
+
+            SS2itemlist["BrawnBoost Implant"]["count"] -= 2 #leaves 2
+            SS2itemlist["PsiBoost Implant"]["count"] -= 2 #leaves 2
+            SS2itemlist["SwiftBoost Implant"]["count"] -= 3 #leaves 2
+            #SS2itemlist["LabAssistant Implant"]["count"] -= 0 #leaves 2
+            SS2itemlist["EndurBoost Implant"]["count"] -= 1 #leaves 2
+            SS2itemlist["WormMind Implant"]["count"] -= 2 #leaves 2
+            #SS2itemlist["ExperTech Implant"]["count"] -= 0 #leaves 2
+            #SS2itemlist["WormBlood Implant"]["count"] -= 0 #leaves 2
+            SS2itemlist["WormHeart Implant"]["count"] -= 2 #leaves 2
+
+            #maintain the same or very close total amount of nanites
+            SS2itemlist["5 Nanites"]["count"] -= 0 #leaves 17
+            SS2itemlist["10 Nanites"]["count"] -= 0 #leaves 35
+            SS2itemlist["15 Nanites"]["count"] -= 0 #leaves 13
+            SS2itemlist["20 Nanites"]["count"] -= 0 #leaves 33
+            SS2itemlist["30 Nanites"]["count"] -= 0 #leaves 14
+            SS2itemlist["35 Nanites"]["count"] -= 0 #leaves 6
+            SS2itemlist["40 Nanites"]["count"] -= 0 #leaves 10
+            SS2itemlist["50 Nanites"]["count"] -= 0 #leaves 19
+            SS2itemlist["55 Nanites"]["count"] -= 0 #leaves 5
+            SS2itemlist["65 Nanites"]["count"] -= 0 #leaves 7
+            SS2itemlist["73 Nanites"]["count"] -= 0 #leaves 2
+            SS2itemlist["79 Nanites"]["count"] -= 0 #leaves 6
+            SS2itemlist["85 Nanites"]["count"] -= 0 #leaves 1
+            SS2itemlist["503 Nanites"]["count"] -= 0 #leaves 1
+
+            #maintain the same or very close total amount of cyber modules
+            #make sure there is some amount of cyber module items 10 or less or it will cause generation issues
+            SS2itemlist["2 Cyber Modules"]["count"] -= 0 #leaves 22
+            SS2itemlist["3 Cyber Modules"]["count"] -= 0 #leaves 26
+            SS2itemlist["4 Cyber Modules"]["count"] -= 0 #leaves 12
+            SS2itemlist["5 Cyber Modules"]["count"] -= 0 #leaves 9
+            SS2itemlist["6 Cyber Modules"]["count"] -= 0 #leaves 10
+            SS2itemlist["7 Cyber Modules"]["count"] -= 0 #leaves 2
+            SS2itemlist["8 Cyber Modules"]["count"] -= 0 #leaves 5
+            SS2itemlist["10 Cyber Modules"]["count"] -= 0 #leaves 19
+            SS2itemlist["13 Cyber Modules"]["count"] -= 0 #leaves 2
+            SS2itemlist["14 Cyber Modules"]["count"] -= 0 #leaves 2
+            SS2itemlist["15 Cyber Modules"]["count"] -= 0 #leaves 6
+            SS2itemlist["16 Cyber Modules"]["count"] -= 0 #leaves 1
+            SS2itemlist["20 Cyber Modules"]["count"] -= 0 #leaves 9
+            SS2itemlist["25 Cyber Modules"]["count"] -= 0 #leaves 1
+            SS2itemlist["30 Cyber Modules"]["count"] -= 0 #leaves 2
 
         if "Science Access Card" in self.options.start_inventory:
             SS2itemlist["Science Access Card"]["count"] -= 1
