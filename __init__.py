@@ -309,15 +309,15 @@ class SS2World(World):
 
             #maintain the same or very close total amount of nanites (core 5208, current 5211)
             SS2itemlist["5 Nanites"]["count"] -= 16 #leaves 1
-            SS2itemlist["10 Nanites"]["count"] -= 35 #leaves 0
-            SS2itemlist["15 Nanites"]["count"] -= 13 #leaves 0
-            SS2itemlist["20 Nanites"]["count"] -= 33 #leaves 0
+            SS2itemlist["10 Nanites"]["count"] -= 34 #leaves 1
+            SS2itemlist["15 Nanites"]["count"] -= 12 #leaves 1
+            SS2itemlist["20 Nanites"]["count"] -= 31 #leaves 2
             SS2itemlist["30 Nanites"]["count"] -= 10 #leaves 4
             SS2itemlist["35 Nanites"]["count"] -= 0 #leaves 6
             SS2itemlist["40 Nanites"]["count"] += 6 #leaves 16
             SS2itemlist["50 Nanites"]["count"] -= 9 #leaves 10
             SS2itemlist["55 Nanites"]["count"] += 6 #leaves 11
-            SS2itemlist["65 Nanites"]["count"] += 5 #leaves 12
+            SS2itemlist["65 Nanites"]["count"] += 4 #leaves 11
             SS2itemlist["73 Nanites"]["count"] += 10 #leaves 12
             SS2itemlist["79 Nanites"]["count"] += 2 #leaves 8
             SS2itemlist["85 Nanites"]["count"] += 3 #leaves 4
@@ -335,11 +335,11 @@ class SS2World(World):
             SS2itemlist["10 Cyber Modules"]["count"] -= 0 #leaves 19
             SS2itemlist["13 Cyber Modules"]["count"] += 2 #leaves 4
             SS2itemlist["14 Cyber Modules"]["count"] += 2 #leaves 4
-            SS2itemlist["15 Cyber Modules"]["count"] += 2 #leaves 8
+            SS2itemlist["15 Cyber Modules"]["count"] += 4 #leaves 10
             SS2itemlist["16 Cyber Modules"]["count"] += 3 #leaves 4
             SS2itemlist["20 Cyber Modules"]["count"] -= 0 #leaves 9
             SS2itemlist["25 Cyber Modules"]["count"] += 1 #leaves 2
-            SS2itemlist["30 Cyber Modules"]["count"] += 1 #leaves 3
+            SS2itemlist["30 Cyber Modules"]["count"] += 0 #leaves 2
 
         if "Science Access Card" in self.options.start_inventory:
             SS2itemlist["Science Access Card"]["count"] -= 1
