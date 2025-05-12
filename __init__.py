@@ -256,7 +256,7 @@ class SS2World(World):
 
         if self.options.remove_duplicate_locations: #303 already removed
             SS2itemlist["Wrench"]["count"] -= 12 #leaves 2 wrench and 1 starting wrench
-            SS2itemlist["pistol"]["count"] -= 4 #leaves 1
+            SS2itemlist["Pistol"]["count"] -= 4 #leaves 1
             SS2itemlist["Damaged Pistol"]["count"] -= 17 #leaves 1
             SS2itemlist["Broken Pistol"]["count"] -= 9 #leaves 1
             SS2itemlist["Shotgun"]["count"] -= 1 #leaves 1
@@ -307,38 +307,38 @@ class SS2World(World):
             #SS2itemlist["WormBlood Implant"]["count"] -= 0 #leaves 2
             SS2itemlist["WormHeart Implant"]["count"] -= 2 #leaves 2
 
-            #maintain the same or very close total amount of nanites
-            SS2itemlist["5 Nanites"]["count"] -= 0 #leaves 17
-            SS2itemlist["10 Nanites"]["count"] -= 0 #leaves 35
-            SS2itemlist["15 Nanites"]["count"] -= 0 #leaves 13
-            SS2itemlist["20 Nanites"]["count"] -= 0 #leaves 33
-            SS2itemlist["30 Nanites"]["count"] -= 0 #leaves 14
+            #maintain the same or very close total amount of nanites (core 5208, current 5211)
+            SS2itemlist["5 Nanites"]["count"] -= 16 #leaves 1
+            SS2itemlist["10 Nanites"]["count"] -= 35 #leaves 0
+            SS2itemlist["15 Nanites"]["count"] -= 13 #leaves 0
+            SS2itemlist["20 Nanites"]["count"] -= 33 #leaves 0
+            SS2itemlist["30 Nanites"]["count"] -= 10 #leaves 4
             SS2itemlist["35 Nanites"]["count"] -= 0 #leaves 6
-            SS2itemlist["40 Nanites"]["count"] -= 0 #leaves 10
-            SS2itemlist["50 Nanites"]["count"] -= 0 #leaves 19
-            SS2itemlist["55 Nanites"]["count"] -= 0 #leaves 5
-            SS2itemlist["65 Nanites"]["count"] -= 0 #leaves 7
-            SS2itemlist["73 Nanites"]["count"] -= 0 #leaves 2
-            SS2itemlist["79 Nanites"]["count"] -= 0 #leaves 6
-            SS2itemlist["85 Nanites"]["count"] -= 0 #leaves 1
+            SS2itemlist["40 Nanites"]["count"] += 6 #leaves 16
+            SS2itemlist["50 Nanites"]["count"] -= 9 #leaves 10
+            SS2itemlist["55 Nanites"]["count"] += 6 #leaves 11
+            SS2itemlist["65 Nanites"]["count"] += 5 #leaves 12
+            SS2itemlist["73 Nanites"]["count"] += 10 #leaves 12
+            SS2itemlist["79 Nanites"]["count"] += 2 #leaves 8
+            SS2itemlist["85 Nanites"]["count"] += 3 #leaves 4
             SS2itemlist["503 Nanites"]["count"] -= 0 #leaves 1
 
-            #maintain the same or very close total amount of cyber modules
+            #maintain the same or very close total amount of cyber modules (core 944, current 944)
             #make sure there is some amount of cyber module items 10 or less or it will cause generation issues
-            SS2itemlist["2 Cyber Modules"]["count"] -= 0 #leaves 22
-            SS2itemlist["3 Cyber Modules"]["count"] -= 0 #leaves 26
-            SS2itemlist["4 Cyber Modules"]["count"] -= 0 #leaves 12
-            SS2itemlist["5 Cyber Modules"]["count"] -= 0 #leaves 9
+            SS2itemlist["2 Cyber Modules"]["count"] -= 22 #leaves 0
+            SS2itemlist["3 Cyber Modules"]["count"] -= 24 #leaves 2
+            SS2itemlist["4 Cyber Modules"]["count"] -= 9 #leaves 3
+            SS2itemlist["5 Cyber Modules"]["count"] -= 7 #leaves 2
             SS2itemlist["6 Cyber Modules"]["count"] -= 0 #leaves 10
             SS2itemlist["7 Cyber Modules"]["count"] -= 0 #leaves 2
             SS2itemlist["8 Cyber Modules"]["count"] -= 0 #leaves 5
             SS2itemlist["10 Cyber Modules"]["count"] -= 0 #leaves 19
-            SS2itemlist["13 Cyber Modules"]["count"] -= 0 #leaves 2
-            SS2itemlist["14 Cyber Modules"]["count"] -= 0 #leaves 2
-            SS2itemlist["15 Cyber Modules"]["count"] -= 0 #leaves 6
-            SS2itemlist["16 Cyber Modules"]["count"] -= 0 #leaves 1
+            SS2itemlist["13 Cyber Modules"]["count"] += 2 #leaves 4
+            SS2itemlist["14 Cyber Modules"]["count"] += 2 #leaves 4
+            SS2itemlist["15 Cyber Modules"]["count"] += 4 #leaves 10
+            SS2itemlist["16 Cyber Modules"]["count"] += 3 #leaves 4
             SS2itemlist["20 Cyber Modules"]["count"] -= 0 #leaves 9
-            SS2itemlist["25 Cyber Modules"]["count"] -= 0 #leaves 1
+            SS2itemlist["25 Cyber Modules"]["count"] += 1 #leaves 2
             SS2itemlist["30 Cyber Modules"]["count"] -= 0 #leaves 2
 
         if "Science Access Card" in self.options.start_inventory:
