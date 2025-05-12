@@ -10,9 +10,9 @@ class IncludeOSUpgrades(DefaultOnToggle):
     """Include OSUpgrades."""
     display_name = "Include OSUpgrades"
 
-class RemoveDuplicateLocations(Toggle):
+class RemoveDuplicateLocations(DefaultOnToggle):
     """Drastically reduces the amount of locations by removing extra locations with the same name and locations close together.
-    Does not affect chemicals if that option is on.  Compresses items, for example hypos only come in 3 packs."""
+    Does not affect chemicals if that option is on.  Removes all unneccesary audio logs, removes some weapons, and compresses items."""
     display_name = "Remove duplicate locations"
 
 class IncludeChemicals(Toggle):
