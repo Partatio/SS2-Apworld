@@ -335,11 +335,11 @@ class SS2World(World):
             SS2itemlist["10 Cyber Modules"]["count"] -= 0 #leaves 19
             SS2itemlist["13 Cyber Modules"]["count"] += 2 #leaves 4
             SS2itemlist["14 Cyber Modules"]["count"] += 2 #leaves 4
-            SS2itemlist["15 Cyber Modules"]["count"] += 4 #leaves 10
+            SS2itemlist["15 Cyber Modules"]["count"] += 2 #leaves 8
             SS2itemlist["16 Cyber Modules"]["count"] += 3 #leaves 4
             SS2itemlist["20 Cyber Modules"]["count"] -= 0 #leaves 9
             SS2itemlist["25 Cyber Modules"]["count"] += 1 #leaves 2
-            SS2itemlist["30 Cyber Modules"]["count"] -= 0 #leaves 2
+            SS2itemlist["30 Cyber Modules"]["count"] += 1 #leaves 3
 
         if "Science Access Card" in self.options.start_inventory:
             SS2itemlist["Science Access Card"]["count"] -= 1
