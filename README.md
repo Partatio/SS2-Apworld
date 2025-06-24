@@ -13,7 +13,7 @@ The latest [release](https://github.com/Partatio/SS2-Apworld/releases) of the Ar
 ## Installation
 Install the AP world by opening it with Archipelago, or using Install APWorld in the Archipelago Launcher, or by manually placing it in Archipelago/custom_worlds.
 
-Install SCP beta6 and the Archipelago mod using [ss2bmm](https://pshjt.github.io/dmm/) included with the SS2Tool installation.  Make sure to activate them and put SCP_beta7 at the lowest priority.
+Install SCP beta7 and the Archipelago mod using [ss2bmm](https://pshjt.github.io/dmm/) included with the SS2Tool installation.  Make sure to activate them and put SCP_beta7 at the lowest priority.
 
 ## Use
 Follow the Achipelago setup guide to get a game generated and hosted, the yaml can be found in the releases page or by generating the template with the Archipelago Launcher.  The game must be generated locally and by someone with this AP world installed.
