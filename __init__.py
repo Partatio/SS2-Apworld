@@ -372,14 +372,26 @@ class SS2World(World):
         else:
             curoptions += "KeepDuplicates,"
 
+        if self.options.randomize_code_art:
+            curoptions += "ArtCodes,"
+
         if self.options.include_chemicals:
             curoptions += "Chemicals,"
 
         if self.options.include_starting_wrench:
             curoptions += "StartingWrench,"
 
+        if self.options.death_link:
+            curoptions += "DeathLink,"
+
         if self.options.many_is_victory:
-            curoptions += "ManyIsVictory"
+            curoptions += "ManyIsVictory,"
+
+        if self.options.randomize_enemies:
+            curoptions += "RandomizeEnemies,"
+
+        if self.options.randomize_replicators:
+            curoptions += "RandomizeReplicators"
 
         return {"options": curoptions}
     
