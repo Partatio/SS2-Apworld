@@ -193,7 +193,7 @@ async def loc_watcher(ctx):
             else:
                 with open(ctx.sent_items_file, "r") as f:
                     sent_items_str = f.read()
-                    sent_items_set = set(map(int, sent_items_str.split(",")))
+                    sent_items_set = set(map(int, sent_items_str.strip(",").split(",")))
                     new_locs = sent_items_set - ctx.sent_items
                     if new_locs:
                         locs.extend(new_locs)

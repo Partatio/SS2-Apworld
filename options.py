@@ -19,7 +19,7 @@ class RandomizeCodeArt(DefaultOnToggle):
     """Randomize which art has codes in recreation.  All 4 pieces of the code need to be seen to activate the transmitter.
     If this option is off the 4 locations are: 2 in Rec A, 1 near the safe behind the reception desk, 1 in a crew quarters room on the 2nd floor.
     1 in Rec B in the pool room.  1 in Rec C in the artechnology store.  If this option is on the 7 extra locations are:  2 in Rec A inside crew quarters rooms on the 2nd floor.
-    1 in Rec B in the dining room where the lights turn off.  4 in Rec C in the artechnology store Rec C."""
+    1 in Rec B in the dining room where the lights turn off.  4 in Rec C in the artechnology store."""
 
 class IncludeChemicals(Toggle):
     """Include chemicals and manifests."""
@@ -30,10 +30,9 @@ class IncludeStartingWrench(Toggle):
     display_name = "Include starting wrench"
 
 class SS2DeathLink(DeathLink):
-    """Whenever anyone with Death Link on dies, all other players in the multiworld with Death Link on die as well.  Not abusing saving is integral to this option functioning. 
-    Both because it functionally needs the death animation to play out to work, but also because it can easily be invalidated by saving.  My recommendation is to only save after level transitions.
-    I also recommend that even if this option is off to make SS2 more enjoyable."""
-    display_name = "Death Link"
+    __doc__ = ("""Whenever anyone with Death Link on dies, all other players in the multiworld with Death Link on die as well.  Not abusing saving is integral to this option functioning. 
+    Both because it functionally needs the death animation to play out for 2 seconds to work, but also because it can easily be invalidated by saving.  My recommendation is to usually only save after level transitions.
+    I also recommend doing that even if this option is off to make SS2 more enjoyable.""")
 
 class ManyIsVictory(Toggle):
     """Make The Many the victory condition instead of Shodan."""
@@ -59,7 +58,7 @@ class SS2options(PerGameCommonOptions):
     randomize_code_art: RandomizeCodeArt
     include_chemicals: IncludeChemicals
     include_starting_wrench: IncludeStartingWrench
-    death_link: DeathLink
+    death_link: SS2DeathLink
     many_is_victory: ManyIsVictory
     start_inventory: SS2StartInventory
     randomize_enemies: RandomizeEnemies
