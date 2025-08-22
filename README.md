@@ -32,7 +32,7 @@ Start a new game and enjoy the horrors!
 ## Tips
 Keypads wont work unless you have the relevant audio log/email.  You can tell you have it if the correct code for the keypad appears when you hover over it.  The tutorial keypad is exempt.  Hackable keypads can be hacked but can not have their code put in.  The transmitter code cannot be input until you have found the 4 parts of the code in the art terminals.
 
-Locations on the map that seem to not be there are probably in enemies roaming around, or hidden above you.
+Locations on the map that seem to not be there are probably hidden above you.
 
 Don’t lose progression items, if you have included chemicals in the pool that includes the first vanadium and 2 antimony you get.
 
@@ -44,10 +44,10 @@ If stat/psi ability randomization is off then the respec machine is an invaluabl
 Item names for most key items to make hinting easy.  For brevity suffixes are removed from item names and defined at the top of their section
 
 #### Access Cards(suffix: Access Card)
-Nikki's Room, Lance's Room, R & D, Security, Deck 2 crew, Cargo Bay 2A/2B, Hydroponics A, Hydroponics D, Athletics, Deck 5 Crew, Bridge, Shuttle Bay, Rickenbacker, Diego's Quarters, Ops Override
+R & D, Deck 2 crew, Security, Cargo Bay 2A/2B, Hydroponics A, Hydroponics D, Nikki's Room, Lance's Room, Athletics, Deck 5 Crew, Ops Override, Shuttle Bay, Bridge, Rickenbacker, Diego's Quarters
 
 #### Audio Logs(suffix: Access AL)
-Maintenance conduit, Auxillary Storage 5, Fluidics Control, Ops Armory, MedSci Armory, Garden Maintenance Tunnel, Deck 5 Crew Room, Command Security Station
+Maintenance conduit, MedSci Armory, Auxillary Storage 5, Fluidics Control, Garden Maintenance Tunnel, Ops Armory, Deck 5 Crew Room, Command Security Station
 
 #### Stat/Weapon Upgrades(suffix: Upgrade)
 Psi, Agility, Cybernetic Affinity, Hacking, Repair, Modify, Maintenance, Research, Conventional weapon, Energy weapon, Heavy weapon, Annelid weapon
@@ -56,7 +56,7 @@ Psi, Agility, Cybernetic Affinity, Hacking, Repair, Modify, Maintenance, Researc
 First Tier Neural Capacity, Psycho-Reflective Screen, Neuro-Reflex Dampening, Kinetic Redirection(does not work on locations), Pyschogenic Agility, Psychogenic Cyber-Affinity, Projected Cryokinesis, Remote Electron Tampering, Second Tier Neural Capacity, Anti-Entropic Field, Adrenaline Overproduction, Neural Decontamination, Cerebro-Stimulated Regeneration, Psychogenic Strength, Recursive Psionic Amplification, Localized Pyrokinesis, Third Tier Neural Capacity, Molecular Duplication, Electron Cascade, Energy Reflection, Neural Toxin-Blocker, Enhanced Motion Sensitivity, Projected Pyrokinesis, Psionic Hypnogenesis, Fourth Tier Neural Capacity, Photonic Redirection, Remote Pattern Detection, Electron Suppression, Psychogenic Endurance, Molecular Transmutation, Remote Circuitry Manipulation, Cerebro-Energetic Extension, Fifth Tier Neural Capacity, Advanced Cerebro-Stimulated Regeneration, Soma Transference, Instantaneous Quantum Relocation, Imposed Neural Restructuring, Metacreative Barrier, External Psionic Detonation, Psycho-Reflective Aura
 
 #### Other
-Sympathetic Resonator, Dead Power Cell, 45m/dEx circuit board, Toxin-A, Interpolated Simulation Chip, Quantum Simulation Chip, Linear Simulation Chip
+Dead Power Cell, 45m/dEx circuit board, Toxin-A, Interpolated Simulation Chip, Quantum Simulation Chip, Linear Simulation Chip, Sympathetic Resonator
 
 ## Credits
 Thanks to RoSoDude, Sarge945, ZylonBane, Nameless Voice, and qwint for help on getting this working!

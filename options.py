@@ -31,20 +31,20 @@ class IncludeStartingWrench(Toggle):
 
 class SS2DeathLink(DeathLink):
     __doc__ = ("""Whenever anyone with Death Link on dies, all other players in the multiworld with Death Link on die as well.  Not abusing saving is integral to this option functioning. 
-    Both because it functionally needs the death animation to play out for 2 seconds to work, but also because it can easily be invalidated by saving.  My recommendation is to usually only save after level transitions.
-    I also recommend doing that even if this option is off to make SS2 more enjoyable.""")
+    Both because it functionally needs the death animation to always play out for 2 seconds to work, but also because it can easily be invalidated by saving.
+    I recommend limiting your saving in some way, for example only saving after level transitions.""")
 
 class ManyIsVictory(Toggle):
     """Make The Many the victory condition instead of Shodan."""
     display_name = "The Many is victory condition"
 
 class RandomizeEnemies(DefaultOnToggle):
-    """Randomizes enemies.  Turning off is untested and it is heavily recommended to stay on.
+    """Randomizes enemies.  It is recommended to stay on as this mod's balance is different from vanilla's.
     If turned off the early game will be much more difficult, especially if the starting wrench is randomized, and the mid-late game will be too easy."""
     display_name = "Randomize Enemies"
 
 class RandomizeReplicators(DefaultOnToggle):
-    """Randomizes contents and prices of replicators.  Forces a Psi hypo to be in the MedSci Xerxes room replicator.  Intended to stay on."""
+    """Randomizes contents and prices of replicators.  Forces a Psi hypo to be in the MedSci Xerxes room replicator.  Intended to stay on but not integral."""
     display_name = "Randomize Replicators"
 
 class SS2StartInventory(StartInventory):
