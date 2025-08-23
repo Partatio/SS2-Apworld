@@ -1,0 +1,1 @@
+This is the source for APScript.osm and is a stripped down version of NVScript.  All it does is make aplocations write a locations VoiceIdx property + "," to "APcommunications/SentItems.txt" on FrobWorldEnd.  https://github.com/NamelessVoice/NVScript

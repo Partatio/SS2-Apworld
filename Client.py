@@ -3,23 +3,28 @@ from tkinter import filedialog
 import os
 import sys
 import psutil
+from time import time
 
 import Utils
 from NetUtils import ClientStatus
 from CommonClient import ClientCommandProcessor, CommonContext, gui_enabled, logger, server_loop, get_base_parser
 
+death_link_enabled = False
+death_link_toggle = False
 class SS2CommandProcessor(ClientCommandProcessor):
     def __init__(self, ctx: CommonContext):
         super().__init__(ctx)
 
     def _cmd_deathlink(self):
         "Toggles Death Link, if Death Link was not enabled as an option this does nothing."
-        if self.death_link_enabled:
-            if self.death_link_toggle:
-                self.death_link_toggle = False
+        global death_link_enabled
+        global death_link_toggle
+        if death_link_enabled:
+            if death_link_toggle:
+                death_link_toggle = False
                 logger.info("Death Link turned off")
             else:
-                self.death_link_toggle = True
+                death_link_toggle = True
                 logger.info("Death Link turned on")
         else:
             logger.info("Can't toggle Death Link, option was not enabled")
@@ -40,8 +45,7 @@ class SS2Context(CommonContext):
         self.is_ae = False
         self.sent_items = set()
         self.ss2_proc = None
-        self.death_link_enabled = False
-        self.death_link_toggle = False
+        self.last_deathlink_time = 0.0
 
         options = Utils.get_options()
         self.ss2_dir_path = os.path.join(options["ss2_options"]["ss2_path"])
@@ -115,12 +119,14 @@ class SS2Context(CommonContext):
                 f.write(str(self.seed) + ",")
                 f.write(options)
 
+            global death_link_enabled
+            global death_link_toggle
             if "DeathLink" in options:
-                self.death_link_enabled = True
-                self.death_link_toggle = True
+                death_link_enabled = True
+                death_link_toggle = True
             else:
-                self.death_link_enabled = False
-                self.death_link_toggle = False
+                death_link_enabled = False
+                death_link_toggle = False
 
             self.is_connected = True
 
@@ -130,7 +136,8 @@ class SS2Context(CommonContext):
                     f.write(str(item[0]) + ",")
     
     def on_deathlink(self, data: dict[str, object]):
-        if self.death_link_toggle:
+        global death_link_toggle
+        if death_link_toggle:
             with open(self.recieved_items_file, "a") as f:
                 f.write("500,")
 
@@ -164,11 +171,13 @@ def find_open_loc_files(process):
 async def loc_watcher(ctx):
     while not ctx.exit_event.is_set():
         if ctx.is_connected:
-            if ctx.death_link_enabled:
-                if ctx.death_link_toggle and "DeathLink" not in ctx.tags:
-                    await ctx.update_death_link(ctx.death_link_toggle)
-                if not ctx.death_link_toggle and "DeathLink" in ctx.tags:
-                    await ctx.update_death_link(ctx.death_link_toggle)
+            global death_link_enabled
+            global death_link_toggle
+            if death_link_enabled:
+                if death_link_toggle and "DeathLink" not in ctx.tags:
+                    await ctx.update_death_link(death_link_toggle)
+                if not death_link_toggle and "DeathLink" in ctx.tags:
+                    await ctx.update_death_link(death_link_toggle)
             locs = []
             if ctx.is_ae:
                 try:
@@ -180,11 +189,13 @@ async def loc_watcher(ctx):
                         loc_ids = find_open_loc_files(ctx.ss2_proc)
                         if loc_ids:
                             for loc_id in loc_ids:
+                                logger.info(loc_id)
                                 if loc_id not in ctx.sent_items:
-                                    ctx.sent_items.add(loc_id)
                                     locs.append(loc_id)
-                                    with open(ctx.sent_items_file, "a") as f:
-                                        f.write(str(loc_id) + ",")
+                                    if loc_id < 1800:
+                                        ctx.sent_items.add(loc_id)
+                                        with open(ctx.sent_items_file, "a") as f:
+                                            f.write(str(loc_id) + ",")
                 except psutil.NoSuchProcess:
                     logger.info("SS2 AE process closed")
                     ctx.ss2_proc = None
@@ -203,26 +214,29 @@ async def loc_watcher(ctx):
                     asyncio.create_task(ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]))
                     locs.remove(2)
                 if 2000 in locs:
-                    if ctx.death_link_toggle:
-                        await ctx.send_death(death_text = "Goggles failed you.")
                     locs.remove(2000)
-                    ctx.sent_items.remove(2000)
-                    with open(ctx.sent_items_file, "r+") as f:
-                        contents = f.readline()
-                        contents.replace("2000,", "")
-                        f.seek(0)
-                        f.truncate(0)
-                        f.write(contents)
+                    if death_link_toggle and (time() - ctx.last_deathlink_time) > 4.0:
+                        await ctx.send_death(death_text = "Goggles failed you.")
+                        ctx.last_deathlink_time = time()
+                    if not ctx.is_ae:
+                        with open(ctx.sent_items_file, "r+") as f:
+                            contents = f.readline()
+                            contents = contents.replace("2000,", "")
+                            f.seek(0)
+                            f.truncate(0)
+                            f.write(contents)
                 if 1999 in locs: #deathlink acknowledged so remove deathlink item and the acknowledge
-                    with open(ctx.sent_items_file, "r+") as f:
-                        contents = f.readline()
-                        contents.replace("1999,", "")
-                        f.seek(0)
-                        f.truncate(0)
-                        f.write(contents)
+                    locs.remove(1999)
+                    if not ctx.is_ae:
+                        with open(ctx.sent_items_file, "r+") as f:
+                            contents = f.readline()
+                            contents = contents.replace("1999,", "")
+                            f.seek(0)
+                            f.truncate(0)
+                            f.write(contents)
                     with open(ctx.recieved_items_file, "r+") as f:
                         contents = f.readline()
-                        contents.replace("500,", "")
+                        contents = contents.replace("500,", "")
                         f.seek(0)
                         f.truncate(0)
                         f.write(contents)

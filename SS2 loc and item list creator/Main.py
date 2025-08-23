@@ -1,23 +1,25 @@
+import math
+
 SS2itemsfilepath = "SS2 items output.txt"
 SS2instructionsfilepath = "SS2 instructions output.txt"
 APitemsfilepath = "Archipelago items output.txt"
 APlocsfilepath = "Archipelago locations output.txt"
 SaveDatapath = "RegItemIDLocIDSave.txt"
 
-def newitem(SS2name, APname, id, classification, amount, properties):
+def newitem(SS2name, APname, id, classification, properties):
     with open(SS2itemsfilepath, "a") as f:
-        f.write(str(id) + ": [\"" + SS2name + "\", " + properties + "],\n")
+        f.write("\"" + str(id) + "\": [\"" + SS2name + "\", " + properties + "],\n")
 
     with open(APitemsfilepath, "a") as f:
         f.write("\"" + APname + "\": {\"id\": " + str(id) + ",\n    \"classification\": \"" 
-                + classification + "\",\n    \"count\": " + amount + ",\n    \"option\": \"\"},\n")
+                + classification + "\",\n    \"count\": 1,\n    \"option\": \"\"},\n")
 
 def newloc(name, loc, id, destroyeditem, region, reqitems):
     with open(SS2instructionsfilepath, "a") as f:
         if loc[0] == "[":
-            f.write("\"placeaploc\":" + " [\"\", " + loc + ", " + str(id) + ", " + destroyeditem + "], #" + str(id) + ":" + name + "\n")
+            f.write("[\"placeaploc\", " + "\"\", " + loc + ", " + str(id) + ", " + destroyeditem + "], #" + str(id) + ":" + name + "\n")
         else:
-            f.write("\"placeaploc\":" + " [\"\", vector" + loc + ", " + str(id) + ", " + destroyeditem + "], #" + str(id) + ":" + name +"\n")
+            f.write("[\"placeaploc\", " + "\"\", vector" + loc + ", " + str(id) + ", " + destroyeditem + "], #" + str(id) + ":" + name +"\n")
 
     with open(APlocsfilepath, "a") as f:
         f.write("\"" + name + "\": {\"id\": " + str(id) + ",\n    \"region\": \"" 
@@ -26,23 +28,31 @@ def newloc(name, loc, id, destroyeditem, region, reqitems):
 
 def cybmodshop(terminalids, loc):
     with open(SS2instructionsfilepath, "a") as f:
-        f.write("\"replacecybmodshop\":" + " [\"\", " + terminalids + ", vector" + loc + "],\n")
+        f.write("[\"replacecybmodshop\", " + "\"\", " + terminalids + ", vector" + loc + "],\n")
 
 def destroyobj(objid):
     with open(SS2instructionsfilepath, "a") as f:
-        f.write("\"destroy\":" + " [\"\", " + objid + "],\n")
+        f.write("[\"destroy\", " + "\"\", " + objid + "],\n")
 
 def randomizerepl(replid):
     with open(SS2instructionsfilepath, "a") as f:
-        f.write("\"randomizerepl\":" + " [\"\", " + replid + "],\n")
+        f.write("[\"randomizerepl\", " + "\"\", " + replid + "],\n")
 
 def randomizeenemy(enemyid, tier, loc):
     with open(SS2instructionsfilepath, "a") as f:
-        f.write("\"randomizeenemy\":" + " [\"\", " + enemyid + ", \"" + tier + "\", vector" + loc + "],\n")
+        f.write("[\"randomizeenemy\", " + "\"\", " + enemyid + ", \"" + tier + "\", vector" + loc + "],\n")
 
 def randomizeenemygen(enemygenid, tier):
     with open(SS2instructionsfilepath, "a") as f:
-        f.write("\"directmonstergenrando\":" + " [\"\", " + enemygenid + ", \"" + tier + "\"],\n")
+        f.write("[\"directmonstergenrando\", " + "\"\", " + enemygenid + ", \"" + tier + "\"],\n")
+
+def temp():
+    with open(APlocsfilepath, "a") as f:
+        amount = 0
+        for i in range(1481, 1628):
+            numb = i - 1480
+            amount += 6
+            f.write("\"Cyber module shop " + str(numb) + "\": {\"id\": " + str(i) + ",\n    \"region\": \"Menu\",\n    \"option\": \"StatsSkillsPsi\",\n    \"reqitems\": {\"Cyber Modules\": " + str(amount) + "}},\n")
 
 curregion = ""
 nextitemid = 1
@@ -56,6 +66,9 @@ with open(SaveDatapath, "r") as f:
 while True:
     command = input("Available commands: itemid, locid, region, item, loc, shop, destroy, randorepl, randoenemy, randoenemygen, close\n")
     match command:
+        case "Temp":
+            temp()
+
         case "itemid":
             nextitemid = int(input("New itemid?\n"))
 
@@ -89,11 +102,10 @@ while True:
                     case _:
                         print("invalid entry, enter 1, 2, 3, or 4")
 
-            itemamount = input("Amount of this item? nearly always 1\n")
             itemproperties = input("What are this items properties? enter a list if so, or nothing if none\nfor each property create a list, example: [[\"StackCount\", 239], [\"Scale\", vector(3.00, 0.50, 1.00)], [\"LightColor\", \"hue\", 8.3]]\nif its a character upgrade instead see PlayerScripts and VariousDataTables\n")
             if len(itemproperties) == 0:
                 itemproperties = "[]"
-            newitem(SS2itemname, APitemname, nextitemid, APclassification, itemamount, itemproperties)
+            newitem(SS2itemname, APitemname, nextitemid, APclassification, itemproperties)
             nextitemid += 1
 
         case "loc":
